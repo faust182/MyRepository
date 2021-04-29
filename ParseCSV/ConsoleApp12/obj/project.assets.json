@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Anton\\Work\\C#\\ParseCSV\\ParseCSV\\ParseCSV\\ParseCSV.csproj",
-      "projectName": "ParseCSV",
-      "projectPath": "D:\\Anton\\Work\\C#\\ParseCSV\\ParseCSV\\ParseCSV\\ParseCSV.csproj",
+      "projectUniqueName": "D:\\Anton\\Work\\C#\\ParseCSV\\ParseCSV\\ConsoleApp12\\ConsoleApp12.csproj",
+      "projectName": "ConsoleApp12",
+      "projectPath": "D:\\Anton\\Work\\C#\\ParseCSV\\ParseCSV\\ConsoleApp12\\ConsoleApp12.csproj",
       "packagesPath": "C:\\Users\\Anton\\.nuget\\packages\\",
-      "outputPath": "D:\\Anton\\Work\\C#\\ParseCSV\\ParseCSV\\ParseCSV\\obj\\",
+      "outputPath": "D:\\Anton\\Work\\C#\\ParseCSV\\ParseCSV\\ConsoleApp12\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Anton\\AppData\\Roaming\\NuGet\\NuGet.Config",

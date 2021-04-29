@@ -1,0 +1,13 @@
+D:\Anton\Work\C#\ParseCSV\ParseCSV\ConsoleApp12\bin\Debug\netcoreapp3.1\ConsoleApp12.exe
+D:\Anton\Work\C#\ParseCSV\ParseCSV\ConsoleApp12\bin\Debug\netcoreapp3.1\ConsoleApp12.deps.json
+D:\Anton\Work\C#\ParseCSV\ParseCSV\ConsoleApp12\bin\Debug\netcoreapp3.1\ConsoleApp12.runtimeconfig.json
+D:\Anton\Work\C#\ParseCSV\ParseCSV\ConsoleApp12\bin\Debug\netcoreapp3.1\ConsoleApp12.runtimeconfig.dev.json
+D:\Anton\Work\C#\ParseCSV\ParseCSV\ConsoleApp12\bin\Debug\netcoreapp3.1\ConsoleApp12.dll
+D:\Anton\Work\C#\ParseCSV\ParseCSV\ConsoleApp12\bin\Debug\netcoreapp3.1\ConsoleApp12.pdb
+D:\Anton\Work\C#\ParseCSV\ParseCSV\ConsoleApp12\obj\Debug\netcoreapp3.1\ConsoleApp12.csprojAssemblyReference.cache
+D:\Anton\Work\C#\ParseCSV\ParseCSV\ConsoleApp12\obj\Debug\netcoreapp3.1\ConsoleApp12.AssemblyInfoInputs.cache
+D:\Anton\Work\C#\ParseCSV\ParseCSV\ConsoleApp12\obj\Debug\netcoreapp3.1\ConsoleApp12.AssemblyInfo.cs
+D:\Anton\Work\C#\ParseCSV\ParseCSV\ConsoleApp12\obj\Debug\netcoreapp3.1\ConsoleApp12.csproj.CoreCompileInputs.cache
+D:\Anton\Work\C#\ParseCSV\ParseCSV\ConsoleApp12\obj\Debug\netcoreapp3.1\ConsoleApp12.dll
+D:\Anton\Work\C#\ParseCSV\ParseCSV\ConsoleApp12\obj\Debug\netcoreapp3.1\ConsoleApp12.pdb
+D:\Anton\Work\C#\ParseCSV\ParseCSV\ConsoleApp12\obj\Debug\netcoreapp3.1\ConsoleApp12.genruntimeconfig.cache
