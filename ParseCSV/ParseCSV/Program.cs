@@ -32,8 +32,9 @@ namespace ParseCSV
             //d:\Anton\Work\C#\ParseCSV\ParseCSV\Example meters.CSV
             Console.WriteLine(@"Укажите год (пример: 2001):");
             int year = int.Parse(Console.ReadLine());
-            Console.WriteLine(@"Укажите месяц (указывается порядковый номер месяца. Январь - 1, декабрь - 12):");
-            int month = int.Parse(Console.ReadLine());
+            Console.WriteLine(@"Укажите название месяца или его номер(указывается порядковый номер месяца. Январь - 1, декабрь - 12):");
+            string str_month = Console.ReadLine().ToLower();
+            int month = WhatIsMonth(str_month);
             StringBuilder input = new StringBuilder();
             int number_rows = 0;
 
@@ -72,6 +73,62 @@ namespace ParseCSV
                 }
             }
 
+            static int WhatIsMonth(string month)
+            {
+                if (month == "январь" || month == "1")
+                {
+                    return 1;
+                }
+                else if (month == "февраль" || month == "2")
+                {
+                    return 2;
+                }
+                else if (month == "март" || month == "3")
+                {
+                    return 3;
+                }
+                else if (month == "апрель" || month == "4")
+                {
+                    return 4;
+                }
+                else if (month == "май" || month == "5")
+                {
+                    return 5;
+                }
+                else if (month == "июнь" || month == "6")
+                {
+                    return 6;
+                }
+                else if (month == "июль" || month == "7")
+                {
+                    return 7;
+                }
+                else if (month == "август" || month == "8")
+                {
+                    return 8;
+                }
+                else if (month == "сентябрь" || month == "9")
+                {
+                    return 9;
+                }
+                else if (month == "октябрь" || month == "10")
+                {
+                    return 10;
+                }
+                else if (month == "ноябрь" || month == "11")
+                {
+                    return 11;
+                }
+                else if (month == "декабрь" || month == "12")
+                {
+                    return 12;
+                }
+                else
+                {
+                    Console.WriteLine("Неверно указан месяц");
+                    return 0;
+                }
+            }
 
             static (int hour, int minute, int second) WhatIsTimeInterval(string StartTime, string EndTime) //это не универсальный метод (при переходе интервала в полночь он выдаст неверные данные),
                                                                                                            //он для данной задачи но походит
@@ -147,10 +204,11 @@ namespace ParseCSV
                 if (result.periods == 0) Console.WriteLine("Неверно указан период (месяц или год) или данный период отсутствует в документе");
                 return result;
             }
+
             //а какие еще есть способы кроме ref и out для работы с "внешними переменными"??? 
             var out_tuple = Integrator(month, year, number_rows, data_array);
-            reduced_value_P = (out_tuple.sum_P * ratio) / out_tuple.sum_periods; //среднее приведенное значение активной мощности
-            reduced_value_Q = (out_tuple.sum_Q * ratio) / out_tuple.sum_periods; //среднее приведенное значение реактивной мощности
+            reduced_value_P = out_tuple.sum_P * ratio; //бессмысленное значение, просто для проверки с исходным файлом
+            reduced_value_Q = out_tuple.sum_Q * ratio; //бессмысленное значение, просто для проверки с исходным файлом
             reduced_Pmax = out_tuple.max_P * ratio; //максимальное значение потребления активной мощности за период 
             reduced_Pmin = out_tuple.min_P * ratio; //минимальное значение потребления реактивной мощности за период
             reduced_Qmax = out_tuple.max_Q * ratio; //максимальное значение потребления реактивной мощности за период
@@ -172,7 +230,7 @@ namespace ParseCSV
                     sw.Write(Psq.ToString() + ';');
                     sw.Write(Qsq.ToString());
                 }
-                Console.WriteLine("Запись выполнена");
+                Console.WriteLine("Запись выполнена. Смотрите результат в файле output.CSV");
             }
             catch (Exception e)
             {
