@@ -11,27 +11,35 @@ namespace ParseCSV
             Console.WriteLine(@"Ведите полный путь до файла с показаниями счетчика
 (пример: d:\Work\...\Example.CSV):");
             string path = Console.ReadLine();
-            string[] current_path = path.Split('\\');
-            double ratio = 12000; // будет перемножаться с double, можно использовать int? у меня такое дальше будет, значения не искажаются
-            double reduced_value_P = new double();
-            double reduced_value_Q = new double();
-            double reduced_Pmax = new double();
-            double reduced_Pmin = new double();
-            double reduced_Qmax = new double();
-            double reduced_Qmin = new double();
-            double Psq = new double();
-            double Qsq = new double();
+            string[] cur_path = path.Split('\\');
+            int ratio = 12000; // будет перемножаться с double, можно использовать int? у меня такое дальше будет, значения не искажаются
+            var P = new double();// var
+            var Q = new double();
+            var Pmax = new double();
+            var Pmin = new double();
+            var Qmax = new double();
+            var Qmin = new double();
+            var Psq = new double();
+            var Qsq = new double();
+            int year = new int();
 
-            StringBuilder path_for_output_file = new StringBuilder();
-            for (int i = 0; i < current_path.Length - 1; i++)
+            StringBuilder path_out_f = new StringBuilder();
+            for (int i = 0; i < cur_path.Length - 1; i++)
             {
-                path_for_output_file.Append(current_path[i] + '\\');
+                path_out_f.Append(cur_path[i] + '\\');
             }
-            path_for_output_file.Append("output.CSV");//можно было разместить файл в директории запуска приложения, но я решил так.
-            Console.WriteLine(path_for_output_file + "- здесь будет находиться файл");
+            path_out_f.Append("output.CSV");//можно было разместить файл в директории запуска приложения, но я решил так.
+            Console.WriteLine(path_out_f + "- здесь будет находиться файл");
             //d:\Anton\Work\C#\ParseCSV\ParseCSV\Example meters.CSV
             Console.WriteLine(@"Укажите год (пример: 2001):");
-            int year = int.Parse(Console.ReadLine());
+            try
+            {
+                year = int.Parse(Console.ReadLine());
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Неверно введен год");
+            }
             Console.WriteLine(@"Укажите название месяца или его номер(указывается порядковый номер месяца. Январь - 1, декабрь - 12):");
             string str_month = Console.ReadLine().ToLower();
             int month = WhatIsMonth(str_month);
@@ -71,62 +79,51 @@ namespace ParseCSV
                 {
                     min = val;
                 }
-            }
+            } //название - глагол выходного параметраметра
 
             static int WhatIsMonth(string month)
             {
-                if (month == "январь" || month == "1")
-                {
-                    return 1;
-                }
-                else if (month == "февраль" || month == "2")
-                {
-                    return 2;
-                }
-                else if (month == "март" || month == "3")
-                {
-                    return 3;
-                }
-                else if (month == "апрель" || month == "4")
-                {
-                    return 4;
-                }
-                else if (month == "май" || month == "5")
-                {
-                    return 5;
-                }
-                else if (month == "июнь" || month == "6")
-                {
-                    return 6;
-                }
-                else if (month == "июль" || month == "7")
-                {
-                    return 7;
-                }
-                else if (month == "август" || month == "8")
-                {
-                    return 8;
-                }
-                else if (month == "сентябрь" || month == "9")
-                {
-                    return 9;
-                }
-                else if (month == "октябрь" || month == "10")
-                {
-                    return 10;
-                }
-                else if (month == "ноябрь" || month == "11")
-                {
-                    return 11;
-                }
-                else if (month == "декабрь" || month == "12")
-                {
-                    return 12;
-                }
-                else
-                {
-                    Console.WriteLine("Неверно указан месяц");
-                    return 0;
+                switch (month)
+                {               
+                    case "январь":
+                    case "1":
+                        return 1;
+                    case "февраль":
+                    case "2":
+                        return 2;
+                    case "март":
+                    case "3":
+                        return 3;
+                    case "апрель":
+                    case "4":
+                        return 4;
+                    case "май":
+                    case "5":
+                        return 5;
+                    case "июнь":
+                    case "6":
+                        return 6;
+                    case "июль":
+                    case "7":
+                        return 7;
+                    case "август":
+                    case "8":
+                        return 8;
+                    case "сентябрь":
+                    case "9":
+                        return 9;
+                    case "октябрь":
+                    case "10":
+                        return 10;
+                    case "ноябрь":
+                    case "11":
+                        return 11;
+                    case "декабрь":
+                    case "12":
+                        return 12;
+                    default:
+                        Console.WriteLine("Неверно указан месяц");
+                        return 0;
                 }
             }
 
@@ -164,9 +161,9 @@ namespace ParseCSV
                     result.year = int.Parse(input_date[2]);
                 }
                 return result;
-            }
+            } //DateTime
 
-            static (double sum_P, double sum_Q, double max_P, double min_P, double max_Q, double min_Q, double sq_P, double sq_Q, int sum_minutes, int sum_periods) Integrator
+            static (double sum_P, double sum_Q, double max_P, double min_P, double max_Q, double min_Q, double sq_P, double sq_Q, int sum_minutes, int sum_periods) Integrator //избегаем ref и out
             (int month, int year, int number_rows, string[,] data_array)
             {
                 bool first_step_flag = true; //костыль, чтобы при первом проходе присвоить какое-то значение result.Pmin и result.Qmin,
@@ -207,26 +204,26 @@ namespace ParseCSV
 
             //а какие еще есть способы кроме ref и out для работы с "внешними переменными"??? 
             var out_tuple = Integrator(month, year, number_rows, data_array);
-            reduced_value_P = out_tuple.sum_P * ratio; //бессмысленное значение, просто для проверки с исходным файлом
-            reduced_value_Q = out_tuple.sum_Q * ratio; //бессмысленное значение, просто для проверки с исходным файлом
-            reduced_Pmax = out_tuple.max_P * ratio; //максимальное значение потребления активной мощности за период 
-            reduced_Pmin = out_tuple.min_P * ratio; //минимальное значение потребления реактивной мощности за период
-            reduced_Qmax = out_tuple.max_Q * ratio; //максимальное значение потребления реактивной мощности за период
-            reduced_Qmin = out_tuple.min_Q * ratio; //минимальное значение потребления реактивной мощности за период
+            P = out_tuple.sum_P * ratio; //бессмысленное значение, просто для проверки с исходным файлом
+            Q = out_tuple.sum_Q * ratio; //бессмысленное значение, просто для проверки с исходным файлом
+            Pmax = out_tuple.max_P * ratio; //максимальное значение потребления активной мощности за период
+            Pmin = out_tuple.min_P * ratio; //минимальное значение потребления реактивной мощности за период
+            Qmax = out_tuple.max_Q * ratio; //максимальное значение потребления реактивной мощности за период
+            Qmin = out_tuple.min_Q * ratio; //минимальное значение потребления реактивной мощности за период
             Psq = Math.Sqrt(out_tuple.sq_P / out_tuple.sum_minutes); //среднеквадратичное значение aктивной мощности
             Qsq = Math.Sqrt(out_tuple.sq_Q / out_tuple.sum_minutes); //среднеквадратичное значение реактивной мощности
 
             try
             {
-                using (StreamWriter sw = new StreamWriter(path_for_output_file.ToString(), false, System.Text.Encoding.Default))
+                using (StreamWriter sw = new StreamWriter(path_out_f.ToString(), false, System.Text.Encoding.Default))
                 {
                     sw.WriteLine("P;Q;Pmax;Pmin;Qmax;Qmin;Psq;Qsq");
-                    sw.Write(reduced_value_P.ToString() + ';');
-                    sw.Write(reduced_value_Q.ToString() + ';');
-                    sw.Write(reduced_Pmax.ToString() + ';');
-                    sw.Write(reduced_Pmin.ToString() + ';');
-                    sw.Write(reduced_Qmax.ToString() + ';');
-                    sw.Write(reduced_Qmin.ToString() + ';');
+                    sw.Write(P.ToString() + ';');
+                    sw.Write(Q.ToString() + ';');
+                    sw.Write(Pmax.ToString() + ';');
+                    sw.Write(Pmin.ToString() + ';');
+                    sw.Write(Qmax.ToString() + ';');
+                    sw.Write(Qmin.ToString() + ';');
                     sw.Write(Psq.ToString() + ';');
                     sw.Write(Qsq.ToString());
                 }
