@@ -5,7 +5,7 @@ using System.IO;
 
 namespace ParseCSV
 {
-    class Support
+    class Helper
     {
         public static int GetMonthNumber(string month)
         {
@@ -52,7 +52,8 @@ namespace ParseCSV
                     return 0;
             }
         }
-        public static void MinAndMaxFinder(double val, ref double min, ref double max)
+        // перобазует входящую строку в номер месяца
+        public static void GetMinAndMax(double val, ref double min, ref double max)
         {
             if (val > max)
             {
@@ -62,7 +63,8 @@ namespace ParseCSV
             {
                 min = val;
             }
-        } //название - глагол выходного параметраметра
+        }
+        // присваевает соответствующим переменным значение val если оно оказалось больше или меньше присвоенных  
         public static (int start, int end) GetRowsRangeByMonth(string[,] array, int month, int year)
         {
             var out_tuple = (s: -1, f: -1);
@@ -83,22 +85,41 @@ namespace ParseCSV
                     else if (cur_month != month && DateTime.Parse(array[0, i - 1]).Month == month)
                     {
                         out_tuple.f = i - 1;
+                        break;
                     }
-
+                    else
+                    {
+                        out_tuple.f = i;
+                    }
                 }
                 catch (Exception)
                 {
-
                     continue;
                 }
             }
+            //Console.WriteLine(out_tuple.s);
+            //Console.WriteLine(out_tuple.f);
+            if (out_tuple.s == -1)
+            {
+                Console.WriteLine("Неверно введена дата (месяц и/или год)");
+            }
             return out_tuple;
         }
+        // возвращает два значения- с какой и по какою "строку" в двухмерном массиве находятся данные соответствующие запрошенному периоду (месяцу)
         public static double GetMinuteInterval(string StartTime, string EndTime)
         {
-            TimeSpan interval = DateTime.Parse(EndTime) - DateTime.Parse(StartTime);
+            TimeSpan interval = new TimeSpan();
+            if (EndTime == "24:00:00")
+            {
+                interval = DateTime.Today.AddDays(1) - DateTime.Parse(StartTime);
+            }
+            else
+            {
+                interval = DateTime.Parse(EndTime) - DateTime.Parse(StartTime);
+            }
             return interval.TotalMinutes;
         }
+        // возвращает количество минут на котором производилось усреднение значения в исходном файле
         public static string[,] GetArrayFromCsvFile(string path)
         {
             StringBuilder input = new StringBuilder();
@@ -119,7 +140,7 @@ namespace ParseCSV
             }
             catch
             {
-                Console.WriteLine("Произошла ошибка при чтении файла");
+                Console.WriteLine("Произошла ошибка при чтении файла. Проверьите введенный путь до файла-источника или проверьте, чтобы файл не истользовался другим приложением");
             }
             string[] array = input.ToString().Split('\n');
             number_rows = array.Length;
@@ -136,7 +157,8 @@ namespace ParseCSV
             }
             return output;
         }
-        public static void MakeCsvFile(string path, string[] collunms_name, string[] val_array)
+        // формирует двухмерный массив данных размерностью [количество колонок, количество строк] из исходной таблицы (файла)
+        public static void MakeCsvFile(string path, string[] collunms_name, double[] val_array)
         {
             StringBuilder str = new StringBuilder();
             try
@@ -152,7 +174,7 @@ namespace ParseCSV
                     str.Clear();
                     foreach (var item in val_array)
                     {
-                        str.Append(item + ";");
+                        str.Append(item.ToString() + ";");
                     }
                     str.Remove(str.Length - 1, 1);
                     sw.WriteLine(str.ToString());
@@ -161,46 +183,32 @@ namespace ParseCSV
             }
             catch (Exception e)
             {
+                Console.WriteLine("Создание файла не выполнено");
                 Console.WriteLine(e.Message);
             }
         }
-        /*public static (double sum_P, double sum_Q, double max_P, double min_P, double max_Q, double min_Q, double sq_P, double sq_Q, double sum_minutes, int sum_periods) Integrator //избегаем ref и out
-            (int month, int year, int number_rows, string[,] data_array)
+        // записывает CVS файл, по указанной директории, содержащий всего две строки: первая содержит названия колонок, вторая- соответствующие названиям колонок значения
+        public static (string path_in, string path_out, string month, int year) GetInputData()
         {
-            bool first_step_flag = true; //костыль, чтобы при первом проходе присвоить какое-то значение result.Pmin и result.Qmin,
-                                         //иначе они остануться равны проинициализированным "0", т.к. в источнике все значения больше нуля
-            var result = (P: 0.0, Q: 0.0, Pmax: 0.0, Pmin: 0.0, Qmax: 0.0, Qmin: 0.0, Psq: 0.0, Qsq: 0.0, minutes: 0.0, periods: 0);
-            for (int i = 0; i < number_rows; i++)
-            {
-                DateTime current_date = DateTime.Parse(data_array[0, i]);
-                if (current_date.Month == month && current_date.Year == year)
-                {
-                    var time_interval = Support.GetMinuteInterval(data_array[1, i], data_array[2, i]);
-                    result.minutes += time_interval;
-                    double cur_P = double.Parse(data_array[3, i]);
-                    double cur_Q = double.Parse(data_array[17, i]);
-                    if (first_step_flag) //продолжение костыля с first_step_flag, смотреть коммент выше
-                    {
-                        result.Pmin = cur_P;
-                        result.Pmax = cur_P;
-                        result.Qmin = cur_Q;
-                        result.Qmax = cur_Q;
-                        first_step_flag = false;
-                    }
-                    else
-                    {
-                        Support.MinAndMaxFinder(cur_P, ref result.Pmin, ref result.Pmax);
-                        Support.MinAndMaxFinder(cur_Q, ref result.Qmin, ref result.Qmax);
-                    }
-                    result.P += cur_P;
-                    result.Q += cur_Q;
-                    result.Psq += Math.Pow(cur_P * 12000, 2) * time_interval; //далее понадобится для расчета среднеквадратичных значений
-                    result.Qsq += Math.Pow(cur_Q * 12000, 2) * time_interval; //далее понадобится для расчета среднеквадратичных значений
-                    result.periods++;
-                }
-            }
-            if (result.periods == 0) Console.WriteLine("Неверно указан период (месяц или год) или данный период отсутствует в документе");
-            return result;
-        }*/
+            var out_tuple = (pi: "", po: "", m: "", y: 0);
+            Console.WriteLine(@"Введите полный путь до файла с данными (пример: d:\Program Files\...\Example meters.CSV)");
+            out_tuple.pi = Console.ReadLine();
+            Console.WriteLine();
+
+            Console.WriteLine(@"Введите полный путь до файла в который будут помещены данные (пример: d:\Program Files\...\Result.CSV). Если путь не будет указан, то файл ""output.CSV"" с результатами будет находиться по директории запуска исполняемого файла");
+            out_tuple.po = Console.ReadLine();
+            Console.WriteLine();
+            //d:\Anton\Work\C#\ParseCSV\ParseCSV\Example meters.CSV
+
+            Console.WriteLine("Введите год (допускается введение тоько полного значения):");
+            out_tuple.y = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("Введите название месяца (кириллицей) или его порядковый номер:");
+            out_tuple.m = Console.ReadLine();
+
+            return out_tuple;
+
+        }
+        // реализует консольный ввод требуемых значений (путь до файла-источника, год, месяц, путь до файла с результатами)
     }
 }
