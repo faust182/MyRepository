@@ -7,6 +7,7 @@ namespace ParseCSV
 {
     class Helper
     {
+        // перобазует входящую строку в номер месяца
         public static int GetMonthNumber(string month)
         {
             switch (month)
@@ -52,7 +53,7 @@ namespace ParseCSV
                     return 0;
             }
         }
-        // перобазует входящую строку в номер месяца
+        // присваевает соответствующим переменным значение val если оно оказалось больше или меньше присвоенных
         public static void GetMinAndMax(double val, ref double min, ref double max)
         {
             if (val > max)
@@ -64,7 +65,7 @@ namespace ParseCSV
                 min = val;
             }
         }
-        // присваевает соответствующим переменным значение val если оно оказалось больше или меньше присвоенных  
+        // возвращает два значения- с какой и по какою "строку" в двухмерном массиве находятся данные соответствующие запрошенному периоду (месяцу) 
         public static (int start, int end) GetRowsRangeByMonth(string[,] array, int month, int year)
         {
             var out_tuple = (s: -1, f: -1);
@@ -105,10 +106,10 @@ namespace ParseCSV
             }
             return out_tuple;
         }
-        // возвращает два значения- с какой и по какою "строку" в двухмерном массиве находятся данные соответствующие запрошенному периоду (месяцу)
+        // возвращает количество минут на котором производилось усреднение значения в исходном файле
         public static double GetMinuteInterval(string StartTime, string EndTime)
         {
-            TimeSpan interval = new TimeSpan();
+            var interval = new TimeSpan();
             if (EndTime == "24:00:00")
             {
                 interval = DateTime.Today.AddDays(1) - DateTime.Parse(StartTime);
@@ -119,7 +120,7 @@ namespace ParseCSV
             }
             return interval.TotalMinutes;
         }
-        // возвращает количество минут на котором производилось усреднение значения в исходном файле
+        // формирует двухмерный массив данных размерностью [количество колонок, количество строк] из исходной таблицы (файла)
         public static string[,] GetArrayFromCsvFile(string path)
         {
             StringBuilder input = new StringBuilder();
@@ -157,8 +158,9 @@ namespace ParseCSV
             }
             return output;
         }
-        // формирует двухмерный массив данных размерностью [количество колонок, количество строк] из исходной таблицы (файла)
-        public static void MakeCsvFile(string path, string[] collunms_name, double[] val_array)
+
+        // записывает CVS файл, по указанной директории, содержащий всего две строки: первая содержит названия колонок, вторая- соответствующие названиям колонок значения
+        public static void CriateCsvFile(string path, string[] collunms_name, double[] val_array)
         {
             StringBuilder str = new StringBuilder();
             try
@@ -187,7 +189,7 @@ namespace ParseCSV
                 Console.WriteLine(e.Message);
             }
         }
-        // записывает CVS файл, по указанной директории, содержащий всего две строки: первая содержит названия колонок, вторая- соответствующие названиям колонок значения
+        // реализует консольный ввод требуемых значений (путь до файла-источника, год, месяц, путь до файла с результатами)
         public static (string path_in, string path_out, string month, int year) GetInputData()
         {
             var out_tuple = (pi: "", po: "", m: "", y: 0);
@@ -209,6 +211,132 @@ namespace ParseCSV
             return out_tuple;
 
         }
-        // реализует консольный ввод требуемых значений (путь до файла-источника, год, месяц, путь до файла с результатами)
+
+
+
+        public static double GetTimeMinuteInterval(DateTime startTime, DateTime endTime)
+        {
+            double outputMinute = 0;
+            outputMinute = (endTime - startTime).TotalMinutes;
+            return outputMinute;
+        }
+        public static double GetMaxInRange(List<double> inputList, Range range)
+        {
+            double val = 0;
+            bool flagFirsIteration = true;
+            for (int i = range.Start; i < range.End + 1; i++)
+            {
+                if (flagFirsIteration)
+                {
+                    val = inputList[i];
+                    flagFirsIteration = false;
+                }
+                else
+                {
+                    if (inputList[i] > val) val = inputList[i];
+                }
+            }
+            return val;
+        }
+        public static double GetMinInRange(List<double> inputList, Range range)
+        {
+            double val = 0;
+            bool flagFirsIteration = true;
+            for (int i = range.Start; i < range.End + 1; i++)
+            {
+                if (flagFirsIteration)
+                {
+                    val = inputList[i];
+                    flagFirsIteration = false;
+                }
+                else
+                {
+                    if (inputList[i] < val) val = inputList[i];
+                }
+            }
+            return val;
+        }
+        public static Range GetRowsRangeByMonthOfYear(Table inputTable, int month, int year)
+        {
+            var outputRange = new Range {Start = -1, End = -1 };
+            var currentMonth = new int();
+            var currentYear = new int();
+            for (int i = 0; i < inputTable.ColumnDate.Count; i++)
+            {
+                currentMonth = inputTable.ColumnDate[i].Month;
+                currentYear = inputTable.ColumnDate[i].Year;
+                if (currentMonth == month && currentYear == year && outputRange.Start == -1)
+                {
+                    outputRange.Start = i;
+                }
+                else if (outputRange.Start != -1 && currentMonth != month && inputTable.ColumnDate[i - 1].Month == month)
+                {
+                    outputRange.End = i - 1;
+                    break;
+                }
+                else
+                {
+                    outputRange.End = i;
+                }
+            }
+            //Console.WriteLine(out_tuple.s);
+            //Console.WriteLine(out_tuple.f);
+            if (outputRange.Start == -1)
+            {
+                Console.WriteLine("Неверно введена дата (месяц и/или год)");
+            }
+
+            return outputRange;
+        }
+        // формирует структуру данных типа Table из исходной таблицы (файла)
+        public static Table GetStructFromInputCsvFile(string path)
+        {
+            var unitedStringFromFile = new StringBuilder();
+            var wrongTimeFormatMidnight = "24:00:00";
+            var rightTimeFormatMidnight = "00:00:00";
+            try
+            {
+                using (StreamReader tempString = new StreamReader(path))
+                {
+
+                    string line;
+                    while ((line = tempString.ReadLine()) != null)
+                    {
+                        unitedStringFromFile.Append(line + '\n');
+                    }
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Произошла ошибка при чтении файла. Проверьите введенный путь до файла-источника или проверьте, чтобы файл не истользовался другим приложением");
+            }
+            var outputStruct = new Table(true);
+            var tempListForRows = new List<string>(unitedStringFromFile.ToString().Split('\n'));
+            foreach (var i in tempListForRows)
+            {
+                var tempListForValues = new List<string>(i.Split(';'));
+                try
+                {
+                    outputStruct.ColumnDate.Add(DateTime.Parse(tempListForValues[0]));
+                    outputStruct.ColumnStartTime.Add(DateTime.Parse(tempListForValues[1]));
+                    if (tempListForValues[2] == wrongTimeFormatMidnight)
+                    {
+                        outputStruct.ColumnEndTime.Add(DateTime.Parse(rightTimeFormatMidnight).AddDays(1));
+                    }
+                    else
+                    {
+                        outputStruct.ColumnEndTime.Add(DateTime.Parse(tempListForValues[2]));
+                    }
+                    outputStruct.ColumnActivePower.Add(double.Parse(tempListForValues[3]));
+                    outputStruct.ColumnReactivePower.Add(double.Parse(tempListForValues[17]));
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+            return outputStruct;
+        }
+
     }
 }
