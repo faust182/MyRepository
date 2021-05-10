@@ -53,112 +53,6 @@ namespace ParseCSV
                     return 0;
             }
         }
-        // присваевает соответствующим переменным значение val если оно оказалось больше или меньше присвоенных
-        public static void GetMinAndMax(double val, ref double min, ref double max)
-        {
-            if (val > max)
-            {
-                max = val;
-            }
-            if (val < min)
-            {
-                min = val;
-            }
-        }
-        // возвращает два значения- с какой и по какою "строку" в двухмерном массиве находятся данные соответствующие запрошенному периоду (месяцу) 
-        public static (int start, int end) GetRowsRangeByMonth(string[,] array, int month, int year)
-        {
-            var out_tuple = (s: -1, f: -1);
-            var cur_month = new int();
-            var cur_year = new int();
-            //int s = -1;
-            //int f = -1;
-            for (int i = 0; i < array.Length; i++)
-            {
-                try
-                {
-                    cur_month = DateTime.Parse(array[0, i]).Month;
-                    cur_year = DateTime.Parse(array[0, i]).Year;
-                    if (cur_month == month && cur_year == year && out_tuple.s == -1)
-                    {
-                        out_tuple.s = i;
-                    }
-                    else if (cur_month != month && DateTime.Parse(array[0, i - 1]).Month == month)
-                    {
-                        out_tuple.f = i - 1;
-                        break;
-                    }
-                    else
-                    {
-                        out_tuple.f = i;
-                    }
-                }
-                catch (Exception)
-                {
-                    continue;
-                }
-            }
-            //Console.WriteLine(out_tuple.s);
-            //Console.WriteLine(out_tuple.f);
-            if (out_tuple.s == -1)
-            {
-                Console.WriteLine("Неверно введена дата (месяц и/или год)");
-            }
-            return out_tuple;
-        }
-        // возвращает количество минут на котором производилось усреднение значения в исходном файле
-        public static double GetMinuteInterval(string StartTime, string EndTime)
-        {
-            var interval = new TimeSpan();
-            if (EndTime == "24:00:00")
-            {
-                interval = DateTime.Today.AddDays(1) - DateTime.Parse(StartTime);
-            }
-            else
-            {
-                interval = DateTime.Parse(EndTime) - DateTime.Parse(StartTime);
-            }
-            return interval.TotalMinutes;
-        }
-        // формирует двухмерный массив данных размерностью [количество колонок, количество строк] из исходной таблицы (файла)
-        public static string[,] GetArrayFromCsvFile(string path)
-        {
-            StringBuilder input = new StringBuilder();
-            var number_rows = new int();
-            var number_collumns = new int();
-            try
-            {
-                using (StreamReader sr = new StreamReader(path))
-                {
-
-                    string line;//наверно, нехорошо использовать тут string, но в примере на metanit так...
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                        input.Append(line + '\n');
-                        //number_rows++;
-                    }
-                }
-            }
-            catch
-            {
-                Console.WriteLine("Произошла ошибка при чтении файла. Проверьите введенный путь до файла-источника или проверьте, чтобы файл не истользовался другим приложением");
-            }
-            string[] array = input.ToString().Split('\n');
-            number_rows = array.Length;
-            number_collumns = array[0].Split(';').Length;
-            string[] temp_array = new string[number_collumns];
-            string[,] output = new string[number_collumns, number_rows];
-            for (int i = 0; i < number_rows - 1; i++)
-            {
-                temp_array = array[i].Split(';');
-                for (int j = 0; j < number_collumns - 1; j++)
-                {
-                    output[j, i] = temp_array[j];
-                }
-            }
-            return output;
-        }
-
         // записывает CVS файл, по указанной директории, содержащий всего две строки: первая содержит названия колонок, вторая- соответствующие названиям колонок значения
         public static void CriateCsvFile(string path, string[] collunms_name, double[] val_array)
         {
@@ -211,9 +105,6 @@ namespace ParseCSV
             return out_tuple;
 
         }
-
-
-
         public static double GetTimeMinuteInterval(DateTime startTime, DateTime endTime)
         {
             double outputMinute = 0;

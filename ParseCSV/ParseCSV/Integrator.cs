@@ -86,69 +86,10 @@ namespace ParseCSV
         }
     }
 
-    class FirstIntegrator
+    
+    class Integrator
     {
-        public FirstIntegrator(string path, string month, int year) { p = path; mn = month; y = year; } // конструктор
-        string p;
-        string mn;
-        int m;
-        int y;
-        string[,] array;
-        (int, int) range;
-        public Meter data;
-        public int ratio { get; set; } = 12000;
-        public string path_out_f = Directory.GetCurrentDirectory() + "\\output.CSV";
-        public void CookFile()
-        {
-            bool first_iteration_flag = true;
-            double cur_p = 0;
-            double cur_q = 0;
-            double temp_Psq = 0;
-            double temp_Qsq = 0;
-            m = Helper.GetMonthNumber(mn);
-            array = Helper.GetArrayFromCsvFile(p);
-            range = Helper.GetRowsRangeByMonth(array, m, y);
-            try
-            {
-                for (int i = range.Item1; i < range.Item2 + 1; i++)
-                {
-                    cur_p = double.Parse(array[3, i]);
-                    cur_q = double.Parse(array[17, i]);
-                    data.SumRowsP += cur_p;
-                    data.SumRowsQ += cur_q;
-                    double min_interval = Helper.GetMinuteInterval(array[1, i], array[2, i]);
-                    data.TotalMin += min_interval;
-                    temp_Psq += Math.Pow(cur_p * ratio, 2) * min_interval;
-                    temp_Qsq += Math.Pow(cur_q * ratio, 2) * min_interval;
-                    if (first_iteration_flag == true)
-                    {
-                        data.MaxP = cur_p;
-                        data.MinP = cur_p;
-                        data.MaxQ = cur_q;
-                        data.MinQ = cur_q;
-                        first_iteration_flag = false;
-                    }
-                    else
-                    {
-                        Helper.GetMinAndMax(cur_p, ref data.MinP, ref data.MaxP);
-                        Helper.GetMinAndMax(cur_q, ref data.MinQ, ref data.MaxQ);
-                    }                    
-                }
-                data.Prms = Math.Sqrt(temp_Psq / data.TotalMin);
-                data.Qrms = Math.Sqrt(temp_Qsq / data.TotalMin);
-                string[] collunms_name = { "SumRowsP", "SumRowsQ", "Psq", "Qsq", "MaxP", "MinP", "MaxQ", "MinQ", "TotalMin" };
-                double[] val_array = { data.SumRowsP, data.SumRowsQ, data.Prms, data.Qrms, data.MaxP, data.MinP, data.MaxQ, data.MinQ, data.TotalMin };
-                Helper.CriateCsvFile(path_out_f, collunms_name, val_array);
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Нет релевантных данных");
-            }
-        }
-    }
-    class SecondIntegrator
-    {
-        public SecondIntegrator(string _pathToInputFile, string _month, int _year) { pathToInputFile = _pathToInputFile; month = _month; year = _year; } // конструктор
+        public Integrator(string _pathToInputFile, string _month, int _year) { pathToInputFile = _pathToInputFile; month = _month; year = _year; } // конструктор
         const string defaultNameOutputFile = "\\output.CSV";
         string pathToInputFile;
         string month;
@@ -157,7 +98,7 @@ namespace ParseCSV
         public string pathForOutFile = Directory.GetCurrentDirectory() + defaultNameOutputFile;
         //var tableFromInputFile = new Table(true);
 
-        public void CookOutputFile()
+        public void CreateOutputFile()
         {
             var outputRow = new Meter();
             double currenValueOfActivePower = 0;

@@ -9,15 +9,11 @@ namespace ParseCSV
         static void Main(string[] args)
         {
 
-            //string.IsNullOrEmpty();
+            var input = Helper.GetInputData();
             //d:\Anton\Work\C#\ParseCSV\ParseCSV\Example meters.CSV
-            /*var input = Helper.GetInputData();
-            var a = new FirstIntegrator(input.path_in, input.month, input.year);
-            if (input.path_out != "") a.path_out_f = input.path_out;
-            a.CookFile();*/
-            var path = @"d:\Anton\Work\C#\ParseCSV\ParseCSV\Example meters.CSV";
-            var newMonth = new SecondIntegrator(path, "3", 2017);
-            newMonth.CookOutputFile();
+            var newMonth = new Integrator(input.path_in, input.month, input.year);
+            if (!string.IsNullOrEmpty(input.path_out)) newMonth.pathForOutFile = input.path_out;
+            newMonth.CreateOutputFile();
         }
     }
 }
