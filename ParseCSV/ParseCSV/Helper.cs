@@ -5,7 +5,7 @@ using System.IO;
 
 namespace ParseCSV
 {
-    static class Helper
+    class Helper
     {
         // перобазует входящую строку в номер месяца
         public static int GetMonthNumber(string month)
@@ -84,25 +84,25 @@ namespace ParseCSV
             }
         }
         // реализует консольный ввод требуемых значений (путь до файла-источника, год, месяц, путь до файла с результатами)
-        public static InputData GetInputData()
+        public static (string path_in, string path_out, string month, int year) GetInputData()
         {
-            var output = new InputData();
+            var out_tuple = (pi: "", po: "", m: "", y: 0);
             Console.WriteLine(@"Введите полный путь до файла с данными (пример: d:\Program Files\...\Example meters.CSV)");
-            output.PathInputFile = Console.ReadLine();
+            out_tuple.pi = Console.ReadLine();
             Console.WriteLine();
 
             Console.WriteLine(@"Введите полный путь до файла в который будут помещены данные (пример: d:\Program Files\...\Result.CSV). Если путь не будет указан, то файл ""output.CSV"" с результатами будет находиться по директории запуска исполняемого файла");
-            output.PathOutputFile = Console.ReadLine();
+            out_tuple.po = Console.ReadLine();
             Console.WriteLine();
             //d:\Anton\Work\C#\ParseCSV\ParseCSV\Example meters.CSV
 
             Console.WriteLine("Введите год (допускается введение тоько полного значения):");
-            output.Year = int.Parse(Console.ReadLine());
+            out_tuple.y = int.Parse(Console.ReadLine());
 
             Console.WriteLine("Введите название месяца (кириллицей) или его порядковый номер:");
-            output.Month = Console.ReadLine();
+            out_tuple.m = Console.ReadLine();
 
-            return output;
+            return out_tuple;
 
         }
         public static double GetTimeMinuteInterval(DateTime startTime, DateTime endTime)
@@ -179,67 +179,12 @@ namespace ParseCSV
 
             return outputRange;
         }
-        public static StringBuilder GetSeparatedStringFromInputCsvFile(string path)
-        {
-            var unitedStringFromFile = new StringBuilder();
-            try
-            {
-                using (StreamReader tempString = new StreamReader(path))
-                {
-
-                    string line;
-                    while ((line = tempString.ReadLine()) != null)
-                    {
-                        unitedStringFromFile.Append(line + '\n');
-                    }
-                }
-            }
-            catch
-            {
-                Console.WriteLine("Произошла ошибка при чтении файла. Проверьите введенный путь до файла-источника или проверьте, чтобы файл не истользовался другим приложением");
-            }
-            return unitedStringFromFile;
-        }
-        public static Table GetTypedDataFromString(StringBuilder inputString)
-        {
-            var output = new Table();
-            const char separatorForStrings = '\n';
-            const char separatorForCsvString = ';';
-            const string wrongTimeFormatMidnight = "24:00:00";
-            const string rightTimeFormatMidnight = "00:00:00";
-            var tempRows = new List<string>(inputString.ToString().Split(separatorForStrings));
-            foreach (var row in tempRows)
-            {
-                var tempListForValues = new List<string>(row.Split(separatorForCsvString));
-                var resultOfParsingDate = new DateTime();
-                if (DateTime.TryParse(tempListForValues[0], out resultOfParsingDate))
-                {
-                    output.ColumnDate.Add(resultOfParsingDate);
-                    output.ColumnStartTime.Add(DateTime.Parse(tempListForValues[1]));
-                    if (tempListForValues[2] == wrongTimeFormatMidnight)
-                    {
-                        output.ColumnEndTime.Add(DateTime.Parse(rightTimeFormatMidnight).AddDays(1));
-                    }
-                    else
-                    {
-                        output.ColumnEndTime.Add(DateTime.Parse(tempListForValues[2]));
-                    }
-                    output.ColumnActivePower.Add(double.Parse(tempListForValues[3]));
-                    output.ColumnReactivePower.Add(double.Parse(tempListForValues[17]));
-                }
-                else
-                {
-                    continue;
-                }
-            }
-            return output;
-        }
         // формирует структуру данных типа Table из исходной таблицы (файла)
         public static Table GetStructFromInputCsvFile(string path)
         {
             var unitedStringFromFile = new StringBuilder();
-            const string wrongTimeFormatMidnight = "24:00:00";
-            const string rightTimeFormatMidnight = "00:00:00";
+            var wrongTimeFormatMidnight = "24:00:00";
+            var rightTimeFormatMidnight = "00:00:00";
             try
             {
                 using (StreamReader tempString = new StreamReader(path))
@@ -256,32 +201,32 @@ namespace ParseCSV
             {
                 Console.WriteLine("Произошла ошибка при чтении файла. Проверьите введенный путь до файла-источника или проверьте, чтобы файл не истользовался другим приложением");
             }
-            var output = new Table();
-            var tempRows = new List<string>(unitedStringFromFile.ToString().Split('\n'));
-            foreach (var row in tempRows)
+            var outputStruct = new Table();
+            var tempListForRows = new List<string>(unitedStringFromFile.ToString().Split('\n'));
+            foreach (var i in tempListForRows)
             {
-                var tempListForValues = new List<string>(row.Split(';'));
+                var tempListForValues = new List<string>(i.Split(';'));
                 try
                 {
-                    output.ColumnDate.Add(DateTime.Parse(tempListForValues[0]));
-                    output.ColumnStartTime.Add(DateTime.Parse(tempListForValues[1]));
+                    outputStruct.ColumnDate.Add(DateTime.Parse(tempListForValues[0]));
+                    outputStruct.ColumnStartTime.Add(DateTime.Parse(tempListForValues[1]));
                     if (tempListForValues[2] == wrongTimeFormatMidnight)
                     {
-                        output.ColumnEndTime.Add(DateTime.Parse(rightTimeFormatMidnight).AddDays(1));
+                        outputStruct.ColumnEndTime.Add(DateTime.Parse(rightTimeFormatMidnight).AddDays(1));
                     }
                     else
                     {
-                        output.ColumnEndTime.Add(DateTime.Parse(tempListForValues[2]));
+                        outputStruct.ColumnEndTime.Add(DateTime.Parse(tempListForValues[2]));
                     }
-                    output.ColumnActivePower.Add(double.Parse(tempListForValues[3]));
-                    output.ColumnReactivePower.Add(double.Parse(tempListForValues[17]));
+                    outputStruct.ColumnActivePower.Add(double.Parse(tempListForValues[3]));
+                    outputStruct.ColumnReactivePower.Add(double.Parse(tempListForValues[17]));
                 }
                 catch (Exception)
                 {
                     continue;
                 }
             }
-            return output;
+            return outputStruct;
         }
 
     }

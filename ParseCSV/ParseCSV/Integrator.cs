@@ -5,14 +5,7 @@ using System.Text;
 
 namespace ParseCSV
 {
-    struct InputData
-    {
-        public string PathInputFile;
-        public string PathOutputFile;
-        public string Month;
-        public int Year;
-    }
-    struct OutputData
+    struct Meter
     {
         /// <summary>
         /// сумма всех ячеек активной мощности за выбранный период (для проверки)
@@ -92,17 +85,18 @@ namespace ParseCSV
     }
     class Integrator
     {
-        public Integrator(string path, string inputMonth, int inputYear) { path = pathToInputFile; inputMonth = month; inputYear = year; } // конструктор
+        public Integrator(string _pathToInputFile, string _month, int _year) { pathToInputFile = _pathToInputFile; month = _month; year = _year; } // конструктор
         const string defaultNameOutputFile = "\\output.CSV";
         string pathToInputFile;
         string month;
         int year;
         public int ratio { get; set; } = 12000;
         public string pathForOutFile = Directory.GetCurrentDirectory() + defaultNameOutputFile;
+        //var tableFromInputFile = new Table(true);
 
         public void CreateOutputFile()
         {
-            var outputRow = new OutputData();
+            var outputRow = new Meter();
             double currenValueOfActivePower = 0;
             double currenValueOfReactivePower = 0;
             double currentTimeInterval = 0;
