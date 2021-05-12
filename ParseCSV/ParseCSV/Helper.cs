@@ -201,7 +201,7 @@ namespace ParseCSV
             {
                 Console.WriteLine("Произошла ошибка при чтении файла. Проверьите введенный путь до файла-источника или проверьте, чтобы файл не истользовался другим приложением");
             }
-            var outputStruct = new Table(true);
+            var outputStruct = new Table();
             var tempListForRows = new List<string>(unitedStringFromFile.ToString().Split('\n'));
             foreach (var i in tempListForRows)
             {

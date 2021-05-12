@@ -59,15 +59,13 @@ namespace ParseCSV
     }
     class Table
     {
-        public bool initialize;
         public List<DateTime> ColumnDate;
         public List<DateTime> ColumnStartTime;
         public List<DateTime> ColumnEndTime;
         public List<double> ColumnActivePower;
         public List<double> ColumnReactivePower;
-        public Table(bool init)
+        public Table()
         {
-            initialize = init;
             ColumnDate = new List<DateTime>();
             ColumnStartTime = new List<DateTime>();
             ColumnEndTime = new List<DateTime>();
@@ -85,8 +83,6 @@ namespace ParseCSV
             return row;
         }
     }
-
-    
     class Integrator
     {
         public Integrator(string _pathToInputFile, string _month, int _year) { pathToInputFile = _pathToInputFile; month = _month; year = _year; } // конструктор
