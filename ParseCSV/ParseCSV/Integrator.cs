@@ -92,7 +92,7 @@ namespace ParseCSV
     }
     class Integrator
     {
-        public Integrator(string path, string inputMonth, int inputYear) { path = pathToInputFile; inputMonth = month; inputYear = year; } // конструктор
+        public Integrator(string path, string inputMonth, int inputYear) { pathToInputFile = path; month = inputMonth; year = inputYear; } // конструктор
         const string defaultNameOutputFile = "\\output.CSV";
         string pathToInputFile;
         string month;
@@ -108,7 +108,9 @@ namespace ParseCSV
             double currentTimeInterval = 0;
             double tempRmsActivePower = 0;
             double tempRmsReactivePower = 0;
-            Table tableFromInputFile = Helper.GetStructFromInputCsvFile(pathToInputFile);
+            StringBuilder solidInputString = Helper.GetSeparatedStringFromInputCsvFile(pathToInputFile);
+            Table tableFromInputFile = Helper.GetTypedDataFromString(solidInputString);
+            //Table tableFromInputFile = Helper.GetStructFromInputCsvFile(pathToInputFile);
             int numberOfMomth = Helper.GetMonthNumber(month);
             var range = Helper.GetRowsRangeByMonthOfYear(tableFromInputFile, numberOfMomth, year);
             outputRow.MaxP = Helper.GetMaxInRange(tableFromInputFile.ColumnActivePower, range);

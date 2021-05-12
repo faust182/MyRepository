@@ -207,11 +207,11 @@ namespace ParseCSV
             const char separatorForCsvString = ';';
             const string wrongTimeFormatMidnight = "24:00:00";
             const string rightTimeFormatMidnight = "00:00:00";
+            var resultOfParsingDate = new DateTime();
             var tempRows = new List<string>(inputString.ToString().Split(separatorForStrings));
             foreach (var row in tempRows)
             {
                 var tempListForValues = new List<string>(row.Split(separatorForCsvString));
-                var resultOfParsingDate = new DateTime();
                 if (DateTime.TryParse(tempListForValues[0], out resultOfParsingDate))
                 {
                     output.ColumnDate.Add(resultOfParsingDate);
