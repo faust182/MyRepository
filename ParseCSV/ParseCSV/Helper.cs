@@ -235,54 +235,5 @@ namespace ParseCSV
             return output;
         }
         // формирует структуру данных типа Table из исходной таблицы (файла)
-        public static Table GetStructFromInputCsvFile(string path)
-        {
-            var unitedStringFromFile = new StringBuilder();
-            const string wrongTimeFormatMidnight = "24:00:00";
-            const string rightTimeFormatMidnight = "00:00:00";
-            try
-            {
-                using (StreamReader tempString = new StreamReader(path))
-                {
-
-                    string line;
-                    while ((line = tempString.ReadLine()) != null)
-                    {
-                        unitedStringFromFile.Append(line + '\n');
-                    }
-                }
-            }
-            catch
-            {
-                Console.WriteLine("Произошла ошибка при чтении файла. Проверьите введенный путь до файла-источника или проверьте, чтобы файл не истользовался другим приложением");
-            }
-            var output = new Table();
-            var tempRows = new List<string>(unitedStringFromFile.ToString().Split('\n'));
-            foreach (var row in tempRows)
-            {
-                var tempListForValues = new List<string>(row.Split(';'));
-                try
-                {
-                    output.ColumnDate.Add(DateTime.Parse(tempListForValues[0]));
-                    output.ColumnStartTime.Add(DateTime.Parse(tempListForValues[1]));
-                    if (tempListForValues[2] == wrongTimeFormatMidnight)
-                    {
-                        output.ColumnEndTime.Add(DateTime.Parse(rightTimeFormatMidnight).AddDays(1));
-                    }
-                    else
-                    {
-                        output.ColumnEndTime.Add(DateTime.Parse(tempListForValues[2]));
-                    }
-                    output.ColumnActivePower.Add(double.Parse(tempListForValues[3]));
-                    output.ColumnReactivePower.Add(double.Parse(tempListForValues[17]));
-                }
-                catch (Exception)
-                {
-                    continue;
-                }
-            }
-            return output;
-        }
-
     }
 }
