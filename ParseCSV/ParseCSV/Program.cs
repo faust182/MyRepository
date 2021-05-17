@@ -11,8 +11,8 @@ namespace ParseCSV
 
             var input = Helper.GetInputData();
             //d:\Anton\Work\C#\ParseCSV\ParseCSV\Example meters.CSV
-            var newMonth = new Integrator(input.PathInputFile, input.Month, input.Year);
-            if (!string.IsNullOrEmpty(input.PathOutputFile)) newMonth.pathForOutFile = input.PathOutputFile;
+            var newMonth = new Meter(input.pathInputFile, input.month, input.year);
+            if (!string.IsNullOrEmpty(input.pathOutputFile)) newMonth.pathForOutFile = input.pathOutputFile;
             newMonth.CreateOutputFile();
         }
     }
