@@ -103,28 +103,28 @@ namespace ParseCSV
         }
         public static Range GetRowsRangeByMonthOfYear(Table inputTable, int month, int year)
         {
-            var outputRange = new Range {start = Constants.defaultValue, end = Constants.defaultValue };
+            var outputRange = new Range {start = int.MinValue, end = int.MinValue };
             int currentMonth = 0;
             int currentYear = 0;
             for (int i = 0; i < inputTable.columnDate.Count; i++)
             {
                 currentMonth = inputTable.columnDate[i].Month;
                 currentYear = inputTable.columnDate[i].Year;
-                if (currentMonth == month && currentYear == year && outputRange.start == Constants.defaultValue)
+                if (currentMonth == month && currentYear == year && outputRange.start == int.MinValue)
                 {
                     outputRange.start = i;
                 }
-                else if (outputRange.start != Constants.defaultValue && currentMonth != month && inputTable.columnDate[i - 1].Month == month)
+                else if (outputRange.start != int.MinValue && currentMonth != month && inputTable.columnDate[i - 1].Month == month)
                 {
                     outputRange.end = i - 1;
                     break;
                 }
-                else if (outputRange.start != Constants.defaultValue)
+                else if (outputRange.start != int.MinValue)
                 {
                     outputRange.end = i;
                 }
             }
-            if (outputRange.start == Constants.defaultValue)
+            if (outputRange.start == int.MinValue)
             {
                 Console.WriteLine("Неверно введена дата (месяц и/или год)");
             }
