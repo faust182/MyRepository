@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using static ParseCSV.Helper;
+using static ParseCSV.Constants;
 
 namespace ParseCSV
 {
@@ -84,7 +84,7 @@ namespace ParseCSV
         string month;
         int year;
         public int ratio { get; set; } = 12000;
-        public string pathForOutFile = Directory.GetCurrentDirectory() + Constants.defaultNameOutputFile;
+        public string pathForOutFile = Directory.GetCurrentDirectory() + DefaultNameOutputFile;
 
 
         public void CreateOutputFile()
@@ -95,20 +95,21 @@ namespace ParseCSV
             double currentTimeInterval = 0;
             double tempRmsActivePower = 0;
             double tempRmsReactivePower = 0;
-            Table tableFromInputFile = Parser(pathToInputFile);
-            int numberOfMomth = GetMonthNumber(month);
-            var range = GetRowsRangeByMonthOfYear(tableFromInputFile, numberOfMomth, year);
-            outputRow.maxP = GetMaxInRange(tableFromInputFile.columnActivePower, range);
-            outputRow.maxQ = GetMaxInRange(tableFromInputFile.columnReactivePower, range);
-            outputRow.minP = GetMinInRange(tableFromInputFile.columnActivePower, range);
-            outputRow.minQ = GetMinInRange(tableFromInputFile.columnReactivePower, range);
+            var inputList = Helper.Reader(pathToInputFile);
+            Table tableFromInputFile = Helper.Parser(inputList);
+            int numberOfMomth = Helper.GetMonthNumber(month);
+            var range = Helper.GetRowsRangeByMonthOfYear(tableFromInputFile, numberOfMomth, year);
+            outputRow.maxP = Helper.GetMaxInRange(tableFromInputFile.columnActivePower, range);
+            outputRow.maxQ = Helper.GetMaxInRange(tableFromInputFile.columnReactivePower, range);
+            outputRow.minP = Helper.GetMinInRange(tableFromInputFile.columnActivePower, range);
+            outputRow.minQ = Helper.GetMinInRange(tableFromInputFile.columnReactivePower, range);
             for (int i = range.start; i <= range.end; i++)
             {
                 currenValueOfActivePower = tableFromInputFile.columnActivePower[i];
                 currenValueOfReactivePower = tableFromInputFile.columnReactivePower[i];
                 outputRow.sumRowsP += currenValueOfActivePower;
                 outputRow.sumRowsQ += currenValueOfReactivePower;
-                currentTimeInterval = GetTimeMinuteInterval(tableFromInputFile.columnStartTime[i], tableFromInputFile.columnEndTime[i]);
+                currentTimeInterval = Helper.GetTimeMinuteInterval(tableFromInputFile.columnStartTime[i], tableFromInputFile.columnEndTime[i]);
                 outputRow.totalMin += currentTimeInterval;
                 tempRmsActivePower += Math.Pow(currenValueOfActivePower * ratio, 2) * currentTimeInterval;
                 tempRmsReactivePower += Math.Pow(currenValueOfReactivePower * ratio, 2) * currentTimeInterval;

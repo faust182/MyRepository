@@ -6,9 +6,9 @@ namespace ParseCSV
 {
     static public class Constants
     {
-        public const char separatorForCsvString = ';';
-        public const string wrongTimeFormatMidnight = "24:00:00";
-        public const string rightTimeFormatMidnight = "00:00:00";
-        public const string defaultNameOutputFile = "\\output.CSV";
+        public const char SeparatorForCsvString = ';';
+        public const string WrongTimeFormatMidnight = "24:00:00";
+        public const string RightTimeFormatMidnight = "00:00:00";
+        public const string DefaultNameOutputFile = "\\output.CSV";
     }
 }
