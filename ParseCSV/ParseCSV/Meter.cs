@@ -84,18 +84,23 @@ namespace ParseCSV
         string month;
         int year;
         public int ratio { get; set; } = 12000;
+        public bool flagSuccessReadFile = true;
         public string pathForOutFile = Directory.GetCurrentDirectory() + DefaultNameOutputFile;
+        public OutputData outputRow = new OutputData();
 
-
-        public void CreateOutputFile()
+        public void GetTableData()
         {
-            var outputRow = new OutputData();
             double currenValueOfActivePower = 0;
             double currenValueOfReactivePower = 0;
             double currentTimeInterval = 0;
             double tempRmsActivePower = 0;
             double tempRmsReactivePower = 0;
             var inputList = Helper.Reader(pathToInputFile);
+            if (inputList.Count == 0) 
+            {
+                flagSuccessReadFile = false;
+                return;
+            }
             Table tableFromInputFile = Helper.Parser(inputList);
             int numberOfMomth = Helper.GetMonthNumber(month);
             var range = Helper.GetRowsRangeByMonthOfYear(tableFromInputFile, numberOfMomth, year);
@@ -116,6 +121,11 @@ namespace ParseCSV
             }
             outputRow.pRms = Math.Sqrt(tempRmsActivePower / outputRow.totalMin);
             outputRow.qRms = Math.Sqrt(tempRmsReactivePower / outputRow.totalMin);
+        }
+
+
+        public void CreateOutputFile()
+        {
             string[] collumnsName = { "SumRowsP", "SumRowsQ", "Prms", "Qrms", "MaxP", "MinP", "MaxQ", "MinQ", "TotalMin" };
             double[] valArray = { outputRow.sumRowsP, outputRow.sumRowsQ, outputRow.pRms, outputRow.qRms, outputRow.maxP, outputRow.minP, outputRow.maxQ, outputRow.minQ, outputRow.totalMin };
             Helper.CreateCsvFile(pathForOutFile, collumnsName, valArray);

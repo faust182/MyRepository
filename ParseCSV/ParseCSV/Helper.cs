@@ -64,7 +64,7 @@ namespace ParseCSV
                     str.Remove(str.Length - 1, 1);
                     sw.WriteLine(str.ToString());
                 }
-                Console.WriteLine("Запись выполнена");
+                Console.WriteLine("Создание файла выполнено");
             }
             catch (Exception e)
             {

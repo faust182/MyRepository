@@ -9,9 +9,10 @@ namespace ParseCSV
 
             var input = Helper.GetInputData();
             //d:\Anton\Work\C#\ParseCSV\ParseCSV\Example meters.CSV
-            var newMonth = new Meter(input.pathInputFile, input.month, input.year);
-            if (!string.IsNullOrEmpty(input.pathOutputFile)) newMonth.pathForOutFile = input.pathOutputFile;
-            newMonth.CreateOutputFile();
+            var month = new Meter(input.pathInputFile, input.month, input.year);
+            if (!string.IsNullOrEmpty(input.pathOutputFile)) month.pathForOutFile = input.pathOutputFile;
+            month.GetTableData();
+            if (month.flagSuccessReadFile) month.CreateOutputFile();
         }
     }
 }
