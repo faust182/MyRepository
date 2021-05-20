@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using static ParseCSV.Constants;
 using System.Text;
+using static ParseCSV.Constants;
 
 namespace ParseCSV
 {
@@ -66,6 +66,7 @@ namespace ParseCSV
                     {
                         str.Append(item + ";");
                     }
+
                     str.Remove(str.Length - 1, 1);
                     sw.WriteLine(str.ToString());
                     str.Clear();
@@ -73,9 +74,11 @@ namespace ParseCSV
                     {
                         str.Append(item.ToString() + ";");
                     }
+
                     str.Remove(str.Length - 1, 1);
                     sw.WriteLine(str.ToString());
                 }
+
                 Console.WriteLine("Создание файла выполнено");
             }
             catch (Exception e)
@@ -90,27 +93,27 @@ namespace ParseCSV
         {
             var output = new InputData();
             Console.WriteLine(@"Введите полный путь до файла с данными (пример: d:\Program Files\...\Example meters.CSV)");
-            output.pathInputFile = Console.ReadLine();
+            output.PathInputFile = Console.ReadLine();
             Console.WriteLine();
 
             Console.WriteLine(@"Введите полный путь до файла в который будут помещены данные (пример: d:\Program Files\...\Result.CSV). Если путь не будет указан, то файл ""output.CSV"" с результатами будет находиться по директории запуска исполняемого файла");
-            output.pathOutputFile = Console.ReadLine();
+            output.PathOutputFile = Console.ReadLine();
             Console.WriteLine();
-            //d:\Anton\Work\C#\ParseCSV\ParseCSV\Example meters.CSV
 
             Console.WriteLine("Введите год (допускается введение тоько полного значения):");
-            output.year = int.Parse(Console.ReadLine());
+            output.Year = int.Parse(Console.ReadLine());
 
             Console.WriteLine("Введите название месяца (кириллицей) или его порядковый номер:");
-            output.month = Console.ReadLine();
+            output.Month = Console.ReadLine();
 
             return output;
-
         }
+
         public static double GetTimeMinuteInterval(DateTime startTime, DateTime endTime)
         {
             return (endTime - startTime).TotalMinutes;
         }
+
         public static double GetMaxInRange(List<double> inputList, Range range)
         {
             double val = int.MinValue;
@@ -118,8 +121,10 @@ namespace ParseCSV
             {
                 if (inputList[i] > val) val = inputList[i];
             }
+
             return val;
         }
+
         public static double GetMinInRange(List<double> inputList, Range range)
         {
             double val = int.MaxValue;
@@ -127,8 +132,10 @@ namespace ParseCSV
             {
                 if (inputList[i] < val) val = inputList[i];
             }
+
             return val;
         }
+
         public static List<string> ReadeCsv(string path)
         {
             var collector = new List<string>();
@@ -136,8 +143,8 @@ namespace ParseCSV
             {
                 using (StreamReader tempString = new StreamReader(path))
                 {
-
                     string line;
+
                     while ((line = tempString.ReadLine()) != null)
                     {
                         collector.Add(line);
@@ -148,22 +155,24 @@ namespace ParseCSV
             {
                 Console.WriteLine("Произошла ошибка при чтении файла. Проверьите введенный путь до файла-источника или проверьте, чтобы файл не истользовался другим приложением");
             }
+
             return collector;
         }
+
         public static Range GetRowsRangeByMonthOfYear(Table inputTable, int month, int year)
         {
             int currentMonth = 0;
             int currentYear = 0;
-            var outputRange = new Range {Start = int.MinValue, End = int.MinValue };
-            for (int i = 0; i < inputTable.columnDate.Count; i++)
+            var outputRange = new Range { Start = int.MinValue, End = int.MinValue };
+            for (int i = 0; i < inputTable.ColumnDate.Count; i++)
             {
-                currentMonth = inputTable.columnDate[i].Month;
-                currentYear = inputTable.columnDate[i].Year;
+                currentMonth = inputTable.ColumnDate[i].Month;
+                currentYear = inputTable.ColumnDate[i].Year;
                 if (currentMonth == month && currentYear == year && outputRange.Start == int.MinValue)
                 {
                     outputRange.Start = i;
                 }
-                else if (outputRange.Start != int.MinValue && currentMonth != month && inputTable.columnDate[i - 1].Month == month)
+                else if (outputRange.Start != int.MinValue && currentMonth != month && inputTable.ColumnDate[i - 1].Month == month)
                 {
                     outputRange.End = i - 1;
                     break;
@@ -173,6 +182,7 @@ namespace ParseCSV
                     outputRange.End = i;
                 }
             }
+
             if (outputRange.Start == int.MinValue)
             {
                 Console.WriteLine("Неверно введена дата (месяц и/или год)");
@@ -180,6 +190,7 @@ namespace ParseCSV
 
             return outputRange;
         }
+
         public static Table ParseCsv(List<string> inputList)
         {
             var output = new Table();
@@ -189,18 +200,19 @@ namespace ParseCSV
                 var tempArray = line.Split(';');
                 if (DateTime.TryParse(tempArray[0], out resultOfParsingDate))
                 {
-                    output.columnDate.Add(resultOfParsingDate);
-                    output.columnStartTime.Add(DateTime.Parse(tempArray[1]));
+                    output.ColumnDate.Add(resultOfParsingDate);
+                    output.ColumnStartTime.Add(DateTime.Parse(tempArray[1]));
                     if (tempArray[2] == WrongTimeFormatMidnight)
                     {
-                        output.columnEndTime.Add(DateTime.Parse(RightTimeFormatMidnight).AddDays(1));
+                        output.ColumnEndTime.Add(DateTime.Parse(RightTimeFormatMidnight).AddDays(1));
                     }
                     else
                     {
-                        output.columnEndTime.Add(DateTime.Parse(tempArray[2]));
+                        output.ColumnEndTime.Add(DateTime.Parse(tempArray[2]));
                     }
-                    output.columnActivePower.Add(double.Parse(tempArray[3]));
-                    output.columnReactivePower.Add(double.Parse(tempArray[17]));
+
+                    output.ColumnActivePower.Add(double.Parse(tempArray[3]));
+                    output.ColumnReactivePower.Add(double.Parse(tempArray[17]));
                 }
             }
             

@@ -2,7 +2,7 @@
 
 namespace ParseCSV
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
@@ -10,7 +10,8 @@ namespace ParseCSV
             item1.GetData();
             item1.CalculateValues();
             item1.CreateOutputFile();
-            //d:\Anton\Work\C#\ParseCSV\ParseCSV\Example meters.CSV
+
+            // d:\Anton\Work\C#\ParseCSV\ParseCSV\Example meters.CSV
         }
     }
 }

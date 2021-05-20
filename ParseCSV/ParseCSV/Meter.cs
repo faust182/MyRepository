@@ -1,17 +1,10 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using static ParseCSV.Constants;
 
 namespace ParseCSV
 {
-    class InputData
-    {
-        public string pathInputFile;
-        public string pathOutputFile;
-        public string month;
-        public int year;
-    }
     struct OutputData
     {
         /// <summary>
@@ -59,48 +52,28 @@ namespace ParseCSV
         /// </summary>
         public double TotalMin;
     }
+
     struct Range
     {
         public int Start;
         public int End;
     }
-    class Table
-    {
-        public List<DateTime> columnDate { get; set; }
-        public List<DateTime> columnStartTime { get; set; }
-        public List<DateTime> columnEndTime { get; set; }
-        public List<double> columnActivePower { get; set; }
-        public List<double> columnReactivePower { get; set; }
-        public Table()
-        {
-            this.columnDate = new List<DateTime>();
-            this.columnStartTime = new List<DateTime>();
-            this.columnEndTime = new List<DateTime>();
-            this.columnActivePower = new List<double>();
-            this.columnReactivePower = new List<double>();
-        }
-    }
+
     class Meter
     {
+        public string PathForOutFile = Directory.GetCurrentDirectory() + DefaultNameOutputFile;
 
-        /*public Meter(string path, string inputMonth, int inputYear)
-        { 
-            pathToInputFile = path; 
-            month = inputMonth; 
-            year = inputYear; 
-        }*/
-        /*string pathToInputFile { get; set; }
-        string month { get; set; }
-        int year { get; set; }*/
-        InputData input { get; set; }
-        public int ratio { get; set; } = DefaultRatio;
+        public OutputData OutputRow = new OutputData();
+
         private bool flagSuccessReadFile = true;
-        public string pathForOutFile = Directory.GetCurrentDirectory() + DefaultNameOutputFile;
-        public OutputData outputRow = new OutputData();
 
-        public void GetData ()
+        public int Ratio { get; set; } = DefaultRatio;
+
+        InputData Input { get; set; }
+
+        public void GetData()
         {
-            input = Helper.GetInputData();
+            Input = Helper.GetInputData();
         }
 
         public void CalculateValues()
@@ -110,42 +83,43 @@ namespace ParseCSV
             double currentTimeInterval = 0;
             double tempRmsActivePower = 0;
             double tempRmsReactivePower = 0;
-            var inputList = Helper.ReadeCsv(input.pathInputFile);
+            var inputList = Helper.ReadeCsv(Input.PathInputFile);
             if (inputList.Count == 0) 
             {
                 flagSuccessReadFile = false;
                 return;
             }
+
             Table tableFromInputFile = Helper.ParseCsv(inputList);
-            int numberOfMomth = Helper.GetMonthNumber(input.month);
-            var range = Helper.GetRowsRangeByMonthOfYear(tableFromInputFile, numberOfMomth, input.year);
-            outputRow.MaxP = Helper.GetMaxInRange(tableFromInputFile.columnActivePower, range);
-            outputRow.MaxQ = Helper.GetMaxInRange(tableFromInputFile.columnReactivePower, range);
-            outputRow.MinP = Helper.GetMinInRange(tableFromInputFile.columnActivePower, range);
-            outputRow.MinQ = Helper.GetMinInRange(tableFromInputFile.columnReactivePower, range);
+            int numberOfMomth = Helper.GetMonthNumber(Input.Month);
+            var range = Helper.GetRowsRangeByMonthOfYear(tableFromInputFile, numberOfMomth, Input.Year);
+            OutputRow.MaxP = Helper.GetMaxInRange(tableFromInputFile.ColumnActivePower, range);
+            OutputRow.MaxQ = Helper.GetMaxInRange(tableFromInputFile.ColumnReactivePower, range);
+            OutputRow.MinP = Helper.GetMinInRange(tableFromInputFile.ColumnActivePower, range);
+            OutputRow.MinQ = Helper.GetMinInRange(tableFromInputFile.ColumnReactivePower, range);
             for (int i = range.Start; i <= range.End; i++)
             {
-                currenValueOfActivePower = tableFromInputFile.columnActivePower[i];
-                currenValueOfReactivePower = tableFromInputFile.columnReactivePower[i];
-                outputRow.SumRowsP += currenValueOfActivePower;
-                outputRow.SumRowsQ += currenValueOfReactivePower;
-                currentTimeInterval = Helper.GetTimeMinuteInterval(tableFromInputFile.columnStartTime[i], tableFromInputFile.columnEndTime[i]);
-                outputRow.TotalMin += currentTimeInterval;
-                tempRmsActivePower += Math.Pow(currenValueOfActivePower * ratio, 2) * currentTimeInterval;
-                tempRmsReactivePower += Math.Pow(currenValueOfReactivePower * ratio, 2) * currentTimeInterval;
+                currenValueOfActivePower = tableFromInputFile.ColumnActivePower[i];
+                currenValueOfReactivePower = tableFromInputFile.ColumnReactivePower[i];
+                OutputRow.SumRowsP += currenValueOfActivePower;
+                OutputRow.SumRowsQ += currenValueOfReactivePower;
+                currentTimeInterval = Helper.GetTimeMinuteInterval(tableFromInputFile.ColumnStartTime[i], tableFromInputFile.ColumnEndTime[i]);
+                OutputRow.TotalMin += currentTimeInterval;
+                tempRmsActivePower += Math.Pow(currenValueOfActivePower * Ratio, 2) * currentTimeInterval;
+                tempRmsReactivePower += Math.Pow(currenValueOfReactivePower * Ratio, 2) * currentTimeInterval;
             }
-            outputRow.Prms = Math.Sqrt(tempRmsActivePower / outputRow.TotalMin);
-            outputRow.Qrms = Math.Sqrt(tempRmsReactivePower / outputRow.TotalMin);
-        }
 
+            OutputRow.Prms = Math.Sqrt(tempRmsActivePower / OutputRow.TotalMin);
+            OutputRow.Qrms = Math.Sqrt(tempRmsReactivePower / OutputRow.TotalMin);
+        }
 
         public void CreateOutputFile()
         {
             if (flagSuccessReadFile)
             {
                 string[] collumnsName = { "SumRowsP", "SumRowsQ", "Prms", "Qrms", "MaxP", "MinP", "MaxQ", "MinQ", "TotalMin" };
-                double[] valArray = { outputRow.SumRowsP, outputRow.SumRowsQ, outputRow.Prms, outputRow.Qrms, outputRow.MaxP, outputRow.MinP, outputRow.MaxQ, outputRow.MinQ, outputRow.TotalMin };
-                Helper.CreateCsvFile(pathForOutFile, collumnsName, valArray);
+                double[] valArray = { OutputRow.SumRowsP, OutputRow.SumRowsQ, OutputRow.Prms, OutputRow.Qrms, OutputRow.MaxP, OutputRow.MinP, OutputRow.MaxQ, OutputRow.MinQ, OutputRow.TotalMin };
+                Helper.CreateCsvFile(PathForOutFile, collumnsName, valArray);
             }
             else
             {
