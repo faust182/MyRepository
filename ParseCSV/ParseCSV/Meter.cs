@@ -17,44 +17,52 @@ namespace ParseCSV
         /// <summary>
         /// сумма всех ячеек активной мощности за выбранный период (для проверки)
         /// </summary>
-        public double sumRowsP;
+        public double SumRowsP;
+
         /// <summary>
         /// сумма всех ячеек реактивной мощности за выбранный период (для проверки)
         /// </summary>
-        public double sumRowsQ;
+        public double SumRowsQ;
+
         /// <summary>
         /// среднеквадратичное значение активной мощности за выбранный период (месяц)
         /// </summary>
-        public double pRms;
+        public double Prms;
+
         /// <summary>
         /// среднеквадратичное значение реактивной мощности за выбранный период (месяц)
         /// </summary>
-        public double qRms;
+        public double Qrms;
+
         /// <summary>
         /// максимальное среднее значение потребления активной мощности за выбранный период (месяц), используется не приведенное значения для простоты проверки
         /// </summary>
-        public double maxP;
+        public double MaxP;
+
         /// <summary>
         /// минимальное среднее значение потребления активной мощности за выбранный период (месяц), используется не приведенное значения для простоты проверки
         /// </summary>
-        public double minP;
+        public double MinP;
+
         /// <summary>
         /// максимальное среднее значение потребления реактивной мощности за выбранный период (месяц), используется не приведенное значения для простоты проверки
         /// </summary>
-        public double maxQ;
+        public double MaxQ;
+
         /// <summary>
         /// минимальное среднее значение потребления реактивной мощности за выбранный период (месяц), используется не приведенное значения для простоты проверки
         /// </summary>
-        public double minQ;
+        public double MinQ;
+
         /// <summary>
         /// время (в минутах) общей наработки счетчика за выбранный период (месяц)
         /// </summary>
-        public double totalMin;
+        public double TotalMin;
     }
     struct Range
     {
-        public int start;
-        public int end;
+        public int Start;
+        public int End;
     }
     class Table
     {
@@ -65,70 +73,84 @@ namespace ParseCSV
         public List<double> columnReactivePower { get; set; }
         public Table()
         {
-            columnDate = new List<DateTime>();
-            columnStartTime = new List<DateTime>();
-            columnEndTime = new List<DateTime>();
-            columnActivePower = new List<double>();
-            columnReactivePower = new List<double>();
+            this.columnDate = new List<DateTime>();
+            this.columnStartTime = new List<DateTime>();
+            this.columnEndTime = new List<DateTime>();
+            this.columnActivePower = new List<double>();
+            this.columnReactivePower = new List<double>();
         }
     }
     class Meter
     {
-        public Meter(string path, string inputMonth, int inputYear)
+
+        /*public Meter(string path, string inputMonth, int inputYear)
         { 
             pathToInputFile = path; 
             month = inputMonth; 
             year = inputYear; 
-        }
-        string pathToInputFile;
-        string month;
-        int year;
-        public int ratio { get; set; } = 12000;
-        public bool flagSuccessReadFile = true;
+        }*/
+        /*string pathToInputFile { get; set; }
+        string month { get; set; }
+        int year { get; set; }*/
+        InputData input { get; set; }
+        public int ratio { get; set; } = DefaultRatio;
+        private bool flagSuccessReadFile = true;
         public string pathForOutFile = Directory.GetCurrentDirectory() + DefaultNameOutputFile;
         public OutputData outputRow = new OutputData();
 
-        public void GetTableData()
+        public void GetData ()
+        {
+            input = Helper.GetInputData();
+        }
+
+        public void CalculateValues()
         {
             double currenValueOfActivePower = 0;
             double currenValueOfReactivePower = 0;
             double currentTimeInterval = 0;
             double tempRmsActivePower = 0;
             double tempRmsReactivePower = 0;
-            var inputList = Helper.Reader(pathToInputFile);
+            var inputList = Helper.ReadeCsv(input.pathInputFile);
             if (inputList.Count == 0) 
             {
                 flagSuccessReadFile = false;
                 return;
             }
-            Table tableFromInputFile = Helper.Parser(inputList);
-            int numberOfMomth = Helper.GetMonthNumber(month);
-            var range = Helper.GetRowsRangeByMonthOfYear(tableFromInputFile, numberOfMomth, year);
-            outputRow.maxP = Helper.GetMaxInRange(tableFromInputFile.columnActivePower, range);
-            outputRow.maxQ = Helper.GetMaxInRange(tableFromInputFile.columnReactivePower, range);
-            outputRow.minP = Helper.GetMinInRange(tableFromInputFile.columnActivePower, range);
-            outputRow.minQ = Helper.GetMinInRange(tableFromInputFile.columnReactivePower, range);
-            for (int i = range.start; i <= range.end; i++)
+            Table tableFromInputFile = Helper.ParseCsv(inputList);
+            int numberOfMomth = Helper.GetMonthNumber(input.month);
+            var range = Helper.GetRowsRangeByMonthOfYear(tableFromInputFile, numberOfMomth, input.year);
+            outputRow.MaxP = Helper.GetMaxInRange(tableFromInputFile.columnActivePower, range);
+            outputRow.MaxQ = Helper.GetMaxInRange(tableFromInputFile.columnReactivePower, range);
+            outputRow.MinP = Helper.GetMinInRange(tableFromInputFile.columnActivePower, range);
+            outputRow.MinQ = Helper.GetMinInRange(tableFromInputFile.columnReactivePower, range);
+            for (int i = range.Start; i <= range.End; i++)
             {
                 currenValueOfActivePower = tableFromInputFile.columnActivePower[i];
                 currenValueOfReactivePower = tableFromInputFile.columnReactivePower[i];
-                outputRow.sumRowsP += currenValueOfActivePower;
-                outputRow.sumRowsQ += currenValueOfReactivePower;
+                outputRow.SumRowsP += currenValueOfActivePower;
+                outputRow.SumRowsQ += currenValueOfReactivePower;
                 currentTimeInterval = Helper.GetTimeMinuteInterval(tableFromInputFile.columnStartTime[i], tableFromInputFile.columnEndTime[i]);
-                outputRow.totalMin += currentTimeInterval;
+                outputRow.TotalMin += currentTimeInterval;
                 tempRmsActivePower += Math.Pow(currenValueOfActivePower * ratio, 2) * currentTimeInterval;
                 tempRmsReactivePower += Math.Pow(currenValueOfReactivePower * ratio, 2) * currentTimeInterval;
             }
-            outputRow.pRms = Math.Sqrt(tempRmsActivePower / outputRow.totalMin);
-            outputRow.qRms = Math.Sqrt(tempRmsReactivePower / outputRow.totalMin);
+            outputRow.Prms = Math.Sqrt(tempRmsActivePower / outputRow.TotalMin);
+            outputRow.Qrms = Math.Sqrt(tempRmsReactivePower / outputRow.TotalMin);
         }
 
 
         public void CreateOutputFile()
         {
-            string[] collumnsName = { "SumRowsP", "SumRowsQ", "Prms", "Qrms", "MaxP", "MinP", "MaxQ", "MinQ", "TotalMin" };
-            double[] valArray = { outputRow.sumRowsP, outputRow.sumRowsQ, outputRow.pRms, outputRow.qRms, outputRow.maxP, outputRow.minP, outputRow.maxQ, outputRow.minQ, outputRow.totalMin };
-            Helper.CreateCsvFile(pathForOutFile, collumnsName, valArray);
+            if (flagSuccessReadFile)
+            {
+                string[] collumnsName = { "SumRowsP", "SumRowsQ", "Prms", "Qrms", "MaxP", "MinP", "MaxQ", "MinQ", "TotalMin" };
+                double[] valArray = { outputRow.SumRowsP, outputRow.SumRowsQ, outputRow.Prms, outputRow.Qrms, outputRow.MaxP, outputRow.MinP, outputRow.MaxQ, outputRow.MinQ, outputRow.TotalMin };
+                Helper.CreateCsvFile(pathForOutFile, collumnsName, valArray);
+            }
+            else
+            {
+                Console.WriteLine("Создание файла невозможно");
+            }
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using static ParseCSV.Constants;
+using System.Text;
 
 namespace ParseCSV
 {
@@ -11,37 +11,49 @@ namespace ParseCSV
         // перобазует входящую строку в номер месяца
         public static int GetMonthNumber(string month)
         {
-            string lowerName = month.ToLower();
-            switch (lowerName)
+            switch (month)
             {
-                case var rule when lowerName == "1" || lowerName == "январь":
+                case "1":
+                case "январь":
                     return 1;
-                case var rule when lowerName == "2" || lowerName == "февраль":
+                case "2":
+                case "февраль":
                     return 2;
-                case var rule when lowerName == "3" || lowerName == "март":
+                case "3":
+                case "март":
                     return 3;
-                case var rule when lowerName == "4" || lowerName == "апрель":
+                case "4":
+                case "апрель":
                     return 4;
-                case var rule when lowerName == "5" || lowerName == "май":
+                case "5":
+                case "май":
                     return 5;
-                case var rule when lowerName == "6" || lowerName == "июнь":
+                case "6":
+                case "июнь":
                     return 6;
-                case var rule when lowerName == "7" || lowerName == "июль":
+                case "7":
+                case "июль":
                     return 7;
-                case var rule when lowerName == "8" || lowerName == "август":
+                case "8":
+                case "август":
                     return 8;
-                case var rule when lowerName == "9" || lowerName == "сентябрь":
+                case "9":
+                case "сентябрь":
                     return 9;
-                case var rule when lowerName == "10" || lowerName == "октябрь":
+                case "10":
+                case "октябрь":
                     return 10;
-                case var rule when lowerName == "11" || lowerName == "ноябрь":
+                case "11":
+                case "ноябрь":
                     return 11;
-                case var rule when lowerName == "12" || lowerName == "декабрь":
+                case "12":
+                case "декабрь":
                     return 12;
                 default: Console.WriteLine("Неверно указан месяц"); 
                     return 0;
             }
         }
+
         // записывает CVS файл, по указанной директории, содержащий всего две строки: первая содержит названия колонок, вторая- соответствующие названиям колонок значения
         public static void CreateCsvFile(string path, string[] collunms_name, double[] val_array)
         {
@@ -72,6 +84,7 @@ namespace ParseCSV
                 Console.WriteLine(e.Message);
             }
         }
+
         // реализует консольный ввод требуемых значений (путь до файла-источника, год, месяц, путь до файла с результатами)
         public static InputData GetInputData()
         {
@@ -101,7 +114,7 @@ namespace ParseCSV
         public static double GetMaxInRange(List<double> inputList, Range range)
         {
             double val = int.MinValue;
-            for (int i = range.start; i < range.end + 1; i++)
+            for (int i = range.Start; i < range.End + 1; i++)
             {
                 if (inputList[i] > val) val = inputList[i];
             }
@@ -110,13 +123,13 @@ namespace ParseCSV
         public static double GetMinInRange(List<double> inputList, Range range)
         {
             double val = int.MaxValue;
-            for (int i = range.start; i < range.end + 1; i++)
+            for (int i = range.Start; i < range.End + 1; i++)
             {
                 if (inputList[i] < val) val = inputList[i];
             }
             return val;
         }
-        public static List<string> Reader(string path)
+        public static List<string> ReadeCsv(string path)
         {
             var collector = new List<string>();
             try
@@ -139,34 +152,35 @@ namespace ParseCSV
         }
         public static Range GetRowsRangeByMonthOfYear(Table inputTable, int month, int year)
         {
-            var outputRange = new Range {start = int.MinValue, end = int.MinValue };
+            int currentMonth = 0;
+            int currentYear = 0;
+            var outputRange = new Range {Start = int.MinValue, End = int.MinValue };
             for (int i = 0; i < inputTable.columnDate.Count; i++)
             {
-                var currentMonth = inputTable.columnDate[i].Month;
-                var currentYear = inputTable.columnDate[i].Year;
-                if (currentMonth == month && currentYear == year && outputRange.start == int.MinValue)
+                currentMonth = inputTable.columnDate[i].Month;
+                currentYear = inputTable.columnDate[i].Year;
+                if (currentMonth == month && currentYear == year && outputRange.Start == int.MinValue)
                 {
-                    outputRange.start = i;
+                    outputRange.Start = i;
                 }
-                else if (outputRange.start != int.MinValue && currentMonth != month && inputTable.columnDate[i - 1].Month == month)
+                else if (outputRange.Start != int.MinValue && currentMonth != month && inputTable.columnDate[i - 1].Month == month)
                 {
-                    outputRange.end = i - 1;
+                    outputRange.End = i - 1;
                     break;
                 }
-                else if (outputRange.start != int.MinValue)
+                else if (outputRange.Start != int.MinValue)
                 {
-                    outputRange.end = i;
+                    outputRange.End = i;
                 }
             }
-            if (outputRange.start == int.MinValue)
+            if (outputRange.Start == int.MinValue)
             {
                 Console.WriteLine("Неверно введена дата (месяц и/или год)");
             }
 
             return outputRange;
         }
- 
-        public static Table Parser(List<string> inputList)
+        public static Table ParseCsv(List<string> inputList)
         {
             var output = new Table();
             var resultOfParsingDate = new DateTime();
