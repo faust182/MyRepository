@@ -11,7 +11,7 @@ namespace ParseCSV
         // перобазует входящую строку в номер месяца
         public static int GetMonthNumber(string month)
         {
-            switch (month)
+            switch (month.ToLower())
             {
                 case "1":
                 case "январь":
@@ -102,9 +102,11 @@ namespace ParseCSV
 
             Console.WriteLine("Введите год (допускается введение тоько полного значения):");
             output.Year = int.Parse(Console.ReadLine());
+            Console.WriteLine();
 
             Console.WriteLine("Введите название месяца (кириллицей) или его порядковый номер:");
             output.Month = Console.ReadLine();
+            Console.WriteLine();
 
             return output;
         }
@@ -136,7 +138,7 @@ namespace ParseCSV
             return val;
         }
 
-        public static List<string> ReadeCsv(string path)
+        public static List<string> ReadCsv(string path)
         {
             var collector = new List<string>();
             try
@@ -163,24 +165,27 @@ namespace ParseCSV
         {
             int currentMonth = 0;
             int currentYear = 0;
+            int counter = 0;
             var outputRange = new Range { Start = int.MinValue, End = int.MinValue };
-            for (int i = 0; i < inputTable.ColumnDate.Count; i++)
+            foreach (var date in inputTable.ColumnDate)
             {
-                currentMonth = inputTable.ColumnDate[i].Month;
-                currentYear = inputTable.ColumnDate[i].Year;
+                currentMonth = date.Month;
+                currentYear = date.Year;
                 if (currentMonth == month && currentYear == year && outputRange.Start == int.MinValue)
                 {
-                    outputRange.Start = i;
+                    outputRange.Start = counter;
                 }
-                else if (outputRange.Start != int.MinValue && currentMonth != month && inputTable.ColumnDate[i - 1].Month == month)
+                else if (outputRange.Start != int.MinValue && currentMonth != month && inputTable.ColumnDate[counter - 1].Month == month)
                 {
-                    outputRange.End = i - 1;
+                    outputRange.End = counter - 1;
                     break;
                 }
                 else if (outputRange.Start != int.MinValue)
                 {
-                    outputRange.End = i;
+                    outputRange.End = counter;
                 }
+                
+                counter++;
             }
 
             if (outputRange.Start == int.MinValue)
