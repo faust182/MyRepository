@@ -111,6 +111,7 @@ namespace ParseCSV
             return output;
         }
 
+        // получает временной интервал (в минутах) за который было усреднено значений мощностей
         public static double GetTimeMinuteInterval(DateTime startTime, DateTime endTime)
         {
             return (endTime - startTime).TotalMinutes;
