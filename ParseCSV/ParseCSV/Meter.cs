@@ -83,7 +83,7 @@ namespace ParseCSV
             double currentTimeInterval = 0;
             double tempRmsActivePower = 0;
             double tempRmsReactivePower = 0;
-            var inputList = Helper.ReadeCsv(Input.PathInputFile);
+            var inputList = Helper.ReadCsv(Input.PathInputFile);
             if (inputList.Count == 0) 
             {
                 flagSuccessReadFile = false;
