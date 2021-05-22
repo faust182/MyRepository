@@ -129,6 +129,7 @@ namespace ParseCSV
             return val;
         }
 
+        // получает минимальное значение в списке в указанном диапазоне
         public static double GetMinInRange(List<double> inputList, Range range)
         {
             double val = int.MaxValue;
