@@ -117,7 +117,7 @@ namespace ParseCSV
             return (endTime - startTime).TotalMinutes;
         }
 
-        // получает ьаксимальное значение в списке в указанном диапазоне
+        // получает максимальное значение в списке в указанном диапазоне
         public static double GetMaxInRange(List<double> inputList, Range range)
         {
             double val = int.MinValue;
