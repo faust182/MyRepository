@@ -111,11 +111,13 @@ namespace ParseCSV
             return output;
         }
 
+        // получает временной интервал (в минутах) за который было усреднено значение мощностей
         public static double GetTimeMinuteInterval(DateTime startTime, DateTime endTime)
         {
             return (endTime - startTime).TotalMinutes;
         }
 
+        // получает максимальное значение в списке в указанном диапазоне
         public static double GetMaxInRange(List<double> inputList, Range range)
         {
             double val = int.MinValue;
@@ -127,6 +129,7 @@ namespace ParseCSV
             return val;
         }
 
+        // получает минимальное значение в списке в указанном диапазоне
         public static double GetMinInRange(List<double> inputList, Range range)
         {
             double val = int.MaxValue;
