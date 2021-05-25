@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Text;
 using static ParseCSV.Constants;
@@ -224,6 +225,36 @@ namespace ParseCSV
                 }
             }
             
+            return output;
+        }
+
+        public static Table ParseCsvNew(List<string> inputList)
+        {
+            var output = new Table();
+            DataTable outTable = output.SimpleTable;
+            DataRow row = outTable.NewRow();
+            var resultOfParsingDate = new DateTime();
+            foreach (var line in inputList)
+            {
+                var tempArray = line.Split(';');
+                if (DateTime.TryParse(tempArray[0], out resultOfParsingDate))
+                {
+                    output.ColumnDate.Add(resultOfParsingDate);
+                    output.ColumnStartTime.Add(DateTime.Parse(tempArray[1]));
+                    if (tempArray[2] == WrongTimeFormatMidnight)
+                    {
+                        output.ColumnEndTime.Add(DateTime.Parse(RightTimeFormatMidnight).AddDays(1));
+                    }
+                    else
+                    {
+                        output.ColumnEndTime.Add(DateTime.Parse(tempArray[2]));
+                    }
+
+                    output.ColumnActivePower.Add(double.Parse(tempArray[3]));
+                    output.ColumnReactivePower.Add(double.Parse(tempArray[17]));
+                }
+            }
+
             return output;
         }
     }
