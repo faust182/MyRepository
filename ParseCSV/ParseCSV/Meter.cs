@@ -67,6 +67,8 @@ namespace ParseCSV
 
         private bool flagSuccessReadFile = true;
 
+        public Table TableForSql { get; set; }
+
         public int Ratio { get; set; } = DefaultRatio;
 
         InputData Input { get; set; }
@@ -91,6 +93,7 @@ namespace ParseCSV
             }
 
             Table tableFromInputFile = Helper.ParseCsv(inputList);
+            TableForSql = Helper.ParseCsvNew(inputList);
             int numberOfMomth = Helper.GetMonthNumber(Input.Month);
             var range = Helper.GetRowsRangeByMonthOfYear(tableFromInputFile, numberOfMomth, Input.Year);
             OutputRow.MaxP = Helper.GetMaxInRange(tableFromInputFile.ColumnActivePower, range);
