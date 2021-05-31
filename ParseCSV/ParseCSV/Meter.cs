@@ -85,6 +85,8 @@ namespace ParseCSV
             double currentTimeInterval = 0;
             double tempRmsActivePower = 0;
             double tempRmsReactivePower = 0;
+            Range relevantRageOfRows;
+            Table tableFromInputFile;
             var inputList = Helper.ReadCsv(Input.PathInputFile);
             if (inputList.Count == 0) 
             {
@@ -92,15 +94,26 @@ namespace ParseCSV
                 return;
             }
 
-            Table tableFromInputFile = Helper.ParseCsv(inputList);
-            TableForSql = Helper.ParseCsvNew(inputList);
-            int numberOfMomth = Helper.GetMonthNumber(Input.Month);
-            var range = Helper.GetRowsRangeByMonthOfYear(tableFromInputFile, numberOfMomth, Input.Year);
-            OutputRow.MaxP = Helper.GetMaxInRange(tableFromInputFile.ColumnActivePower, range);
-            OutputRow.MaxQ = Helper.GetMaxInRange(tableFromInputFile.ColumnReactivePower, range);
-            OutputRow.MinP = Helper.GetMinInRange(tableFromInputFile.ColumnActivePower, range);
-            OutputRow.MinQ = Helper.GetMinInRange(tableFromInputFile.ColumnReactivePower, range);
-            for (int i = range.Start; i <= range.End; i++)
+            do
+            {
+                tableFromInputFile = Helper.ParseCsv(inputList);
+                int numberOfMomth = Helper.GetMonthNumber(Input.Month);
+                relevantRageOfRows = Helper.GetRowsRangeByMonthOfYear(tableFromInputFile, numberOfMomth, Input.Year);
+                if (relevantRageOfRows.Start == int.MinValue)
+                {
+                    Console.WriteLine("В документе нет запрашиваемого диапазона по дате");
+                    Console.WriteLine("Повторите ввод данных");
+                    Console.WriteLine();
+                    Input = Helper.GetInputData();
+                }
+            }
+            while (relevantRageOfRows.Start == int.MinValue);
+            
+            OutputRow.MaxP = Helper.GetMaxInRange(tableFromInputFile.ColumnActivePower, relevantRageOfRows);
+            OutputRow.MaxQ = Helper.GetMaxInRange(tableFromInputFile.ColumnReactivePower, relevantRageOfRows);
+            OutputRow.MinP = Helper.GetMinInRange(tableFromInputFile.ColumnActivePower, relevantRageOfRows);
+            OutputRow.MinQ = Helper.GetMinInRange(tableFromInputFile.ColumnReactivePower, relevantRageOfRows);
+            for (int i = relevantRageOfRows.Start; i <= relevantRageOfRows.End; i++)
             {
                 currenValueOfActivePower = tableFromInputFile.ColumnActivePower[i];
                 currenValueOfReactivePower = tableFromInputFile.ColumnReactivePower[i];
@@ -122,7 +135,8 @@ namespace ParseCSV
             {
                 string[] collumnsName = { "SumRowsP", "SumRowsQ", "Prms", "Qrms", "MaxP", "MinP", "MaxQ", "MinQ", "TotalMin" };
                 double[] valArray = { OutputRow.SumRowsP, OutputRow.SumRowsQ, OutputRow.Prms, OutputRow.Qrms, OutputRow.MaxP, OutputRow.MinP, OutputRow.MaxQ, OutputRow.MinQ, OutputRow.TotalMin };
-                Helper.CreateCsvFile(PathForOutFile, collumnsName, valArray);
+                if (string.IsNullOrEmpty(Input.PathOutputFile)) Helper.CreateCsvFile(PathForOutFile, collumnsName, valArray);
+                else Helper.CreateCsvFile(Input.PathOutputFile, collumnsName, valArray);
             }
             else
             {

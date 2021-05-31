@@ -50,8 +50,7 @@ namespace ParseCSV
                 case "12":
                 case "декабрь":
                     return 12;
-                default: Console.WriteLine("Неверно указан месяц"); 
-                    return 0;
+                default: return 0;
             }
         }
 
@@ -89,26 +88,127 @@ namespace ParseCSV
             }
         }
 
+        public static bool IsCsvFileNameCorrect(string fileName)
+        {
+            bool flagCorrectExpansion = true;
+            bool flagCorrectChars = true;
+            var fileNameArray = fileName.Split('.');
+            foreach (var currentChar in fileName)
+            {
+                foreach (var item in Path.GetInvalidFileNameChars())
+                {
+                    if (currentChar == item) flagCorrectChars = false;
+                }
+            }
+
+            if (fileNameArray[fileNameArray.Length - 1].ToLower() != "csv") flagCorrectExpansion = false;
+
+            return flagCorrectChars && flagCorrectExpansion ? true : false;
+        }
+
         // реализует консольный ввод требуемых значений (путь до файла-источника, год, месяц, путь до файла с результатами)
         public static InputData GetInputData()
         {
+            bool flagCorrectPathInputFile = false;
+            bool flagCorrectPathOutputFile = false;
+            bool flagCorrectYear = false;
+            string pathOutputFile;
+            string outputFileName;
+            int year;
+            int month;
             var output = new InputData();
+            var path = new StringBuilder();
             Console.WriteLine(@"Введите полный путь до файла с данными (пример: d:\Program Files\...\Example meters.CSV)");
-            output.PathInputFile = Console.ReadLine();
             Console.WriteLine();
+            do
+            {
+                string pathInputFile = Console.ReadLine();
+                var pathArray = pathInputFile.Split('\\');
+                for (int i = 0; i < pathArray.Length - 1; i++)
+                {
+                    path.Append(pathArray[i] + "\\");
+                }
 
-            Console.WriteLine(@"Введите полный путь до файла в который будут помещены данные (пример: d:\Program Files\...\Result.CSV). Если путь не будет указан, то файл ""output.CSV"" с результатами будет находиться по директории запуска исполняемого файла");
-            output.PathOutputFile = Console.ReadLine();
+                if (Directory.Exists(path.ToString()) && new FileInfo(pathInputFile).Exists)
+                {
+                    output.PathInputFile = pathInputFile;
+                    flagCorrectPathInputFile = true;
+                    path.Clear();
+                }
+                else
+                {
+                    path.Clear();
+                    Console.WriteLine("Неверно указан путь до файла-источника");
+                    Console.WriteLine("Повторите попытку");
+                    Console.WriteLine();
+                }
+            } 
+            while (!flagCorrectPathInputFile);
+
             Console.WriteLine();
-
-            Console.WriteLine("Введите год (допускается введение тоько полного значения):");
-            output.Year = int.Parse(Console.ReadLine());
+            Console.WriteLine(@"Введите полный путь до файла в который будут помещены результаты (пример: d:\Program Files\...\Result.CSV). Если путь не будет указан, то файл ""output.CSV"" с результатами будет находиться по директории запуска исполняемого файла");
             Console.WriteLine();
+            do
+            {
+                pathOutputFile = Console.ReadLine();
+                var pathArray = pathOutputFile.Split('\\');
+                outputFileName = pathArray[pathArray.Length - 1];
+                for (int i = 0; i < pathArray.Length - 1; i++)
+                {
+                    path.Append(pathArray[i] + "\\");
+                }
 
+                bool flagCorrectName = IsCsvFileNameCorrect(outputFileName);
+                bool flagCorrectPath = Directory.Exists(path.ToString());
+                if ((flagCorrectPath && flagCorrectName) || string.IsNullOrEmpty(pathOutputFile))
+                {
+                    output.PathOutputFile = pathOutputFile;
+                    flagCorrectPathOutputFile = true;
+                    path.Clear();
+                }
+                else
+                {
+                    path.Clear();
+                    if (flagCorrectName == false) Console.WriteLine("Неверно указано имя файла (используются недопустимые символы или неверно указано расширение)");
+                    if (flagCorrectPath == false) Console.WriteLine("Неверно указана директория до файла");
+                    Console.WriteLine("Повторите попытку");
+                    Console.WriteLine();
+                }
+            }
+            while (!flagCorrectPathOutputFile);
+
+            Console.WriteLine();
+            Console.WriteLine("Введите год (допускается ввод тоько полного значения):");
+            do
+            {
+                flagCorrectYear = int.TryParse(Console.ReadLine(), out year);
+                if (flagCorrectYear == true) output.Year = year;
+                else
+                {
+                    Console.WriteLine("Неверно указан год");
+                    Console.WriteLine("Повторите попытку");
+                    Console.WriteLine();
+                }
+            }
+            while (!flagCorrectYear);
+
+            Console.WriteLine();
             Console.WriteLine("Введите название месяца (кириллицей) или его порядковый номер:");
-            output.Month = Console.ReadLine();
+            do
+            {        
+                string inputMonth = Console.ReadLine();
+                month = GetMonthNumber(inputMonth);
+                if (month != 0) output.Month = inputMonth;
+                else
+                {
+                    Console.WriteLine("Неверно указан месяц");
+                    Console.WriteLine("Повторите попытку");
+                    Console.WriteLine();
+                }
+            }
+            while (month == 0);
+            
             Console.WriteLine();
-
             return output;
         }
 
@@ -225,38 +325,6 @@ namespace ParseCSV
                 }
             }
             
-            return output;
-        }
-
-        public static Table ParseCsvNew(List<string> inputList)
-        {
-            var output = new Table();
-            var date = new DateTime();
-            var startTime = new DateTime();
-            var endTime = new DateTime();
-            double activePower = 0;
-            double reactivePower = 0;
-            foreach (var line in inputList)
-            {
-                var tempArray = line.Split(';');
-                if (DateTime.TryParse(tempArray[0], out date))
-                {
-                    startTime = DateTime.Parse(tempArray[1]);
-                    if (tempArray[2] == WrongTimeFormatMidnight)
-                    {
-                        endTime = DateTime.Parse(RightTimeFormatMidnight).AddDays(1);
-                    }
-                    else
-                    {
-                        endTime = DateTime.Parse(tempArray[2]);
-                    }
-
-                    activePower = double.Parse(tempArray[3]);
-                    reactivePower = double.Parse(tempArray[17]);
-                    output.SimpleTable.Rows.Add(new object[] { null, date, startTime, endTime, activePower, reactivePower });
-                }   
-            }
-
             return output;
         }
     }
