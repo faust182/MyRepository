@@ -67,7 +67,7 @@ namespace ParseCSV
 
         private bool flagSuccessReadFile = true;
 
-        public Table TableForSql { get; set; }
+        public TableConstructor.Table Table2 { get; set; }
 
         public int Ratio { get; set; } = DefaultRatio;
 
@@ -97,6 +97,7 @@ namespace ParseCSV
             do
             {
                 tableFromInputFile = Helper.ParseCsv(inputList);
+                Table2 = Helper.ParseCsv2(inputList);
                 int numberOfMomth = Helper.GetMonthNumber(Input.Month);
                 relevantRageOfRows = Helper.GetRowsRangeByMonthOfYear(tableFromInputFile, numberOfMomth, Input.Year);
                 if (relevantRageOfRows.Start == int.MinValue)

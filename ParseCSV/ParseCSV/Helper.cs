@@ -260,6 +260,7 @@ namespace ParseCSV
             catch
             {
                 Console.WriteLine("Произошла ошибка при чтении файла. Проверьите введенный путь до файла-источника или проверьте, чтобы файл не истользовался другим приложением");
+                Console.ReadLine();
             }
 
             return collector;
@@ -325,6 +326,38 @@ namespace ParseCSV
                 }
             }
             
+            return output;
+        }
+
+        public static TableConstructor.Table ParseCsv2(List<string> inputList)
+        {
+            var output = new TableConstructor.Table();
+            var resultOfParsingDate = new DateTime();
+            int rowCounter = 0;
+            foreach (var line in inputList)
+            {
+                var tempArray = line.Split(';');
+                var row = new TableConstructor.Row();
+                if (DateTime.TryParse(tempArray[0], out resultOfParsingDate))
+                {
+                    row.Date = resultOfParsingDate;
+                    row.StartTime = DateTime.Parse(tempArray[1]);
+                    if (tempArray[2] == WrongTimeFormatMidnight)
+                    {
+                        row.EndTime = DateTime.Parse(RightTimeFormatMidnight).AddDays(1);
+                    }
+                    else
+                    {
+                        row.EndTime = DateTime.Parse(tempArray[2]);
+                    }
+
+                    row.ActivePower = double.Parse(tempArray[3]);
+                    row.ReactivePower = double.Parse(tempArray[17]);
+                    output[rowCounter] = row;
+                    rowCounter++;
+                }
+            }
+
             return output;
         }
     }
