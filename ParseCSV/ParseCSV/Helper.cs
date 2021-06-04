@@ -301,7 +301,7 @@ namespace ParseCSV
             return outputRange;
         }
 
-        public static Table ParseCsv(List<string> inputList)
+        public static Table ParseCsvOld(List<string> inputList)
         {
             var output = new Table();
             var resultOfParsingDate = new DateTime();
@@ -329,7 +329,7 @@ namespace ParseCSV
             return output;
         }
 
-        public static TableConstructor.Table ParseCsv2(List<string> inputList)
+        public static TableConstructor.Table ParseCsv(List<string> inputList)
         {
             var output = new TableConstructor.Table();
             var resultOfParsingDate = new DateTime();
