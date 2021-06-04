@@ -67,7 +67,7 @@ namespace ParseCSV
 
         private bool flagSuccessReadFile = true;
 
-        public TableConstructor.Table tableFromInputFile { get; set; }
+        public MyTable TableFromInputFile { get; set; }
 
         public int Ratio { get; set; } = DefaultRatio;
 
@@ -86,7 +86,6 @@ namespace ParseCSV
             double tempRmsActivePower = 0;
             double tempRmsReactivePower = 0;
             Range relevantRageOfRows;
-            Table tableFromInput;
             var inputList = Helper.ReadCsv(Input.PathInputFile);
             if (inputList.Count == 0) 
             {
@@ -96,10 +95,9 @@ namespace ParseCSV
 
             do
             {
-                tableFromInput = Helper.ParseCsvOld(inputList);
-                tableFromInputFile = Helper.ParseCsv(inputList);
+                TableFromInputFile = Helper.ParseCsv(inputList);
                 int numberOfMomth = Helper.GetMonthNumber(Input.Month);
-                relevantRageOfRows = Helper.GetRowsRangeByMonthOfYear(tableFromInput, numberOfMomth, Input.Year);
+                relevantRageOfRows = Helper.GetRowsRangeByMonthOfYear(TableFromInputFile, numberOfMomth, Input.Year);
                 if (relevantRageOfRows.Start == int.MinValue)
                 {
                     Console.WriteLine("В документе нет запрашиваемого диапазона по дате");
@@ -110,17 +108,17 @@ namespace ParseCSV
             }
             while (relevantRageOfRows.Start == int.MinValue);
             
-            OutputRow.MaxP = Helper.GetMaxInRange(tableFromInput.ColumnActivePower, relevantRageOfRows);
-            OutputRow.MaxQ = Helper.GetMaxInRange(tableFromInput.ColumnReactivePower, relevantRageOfRows);
-            OutputRow.MinP = Helper.GetMinInRange(tableFromInput.ColumnActivePower, relevantRageOfRows);
-            OutputRow.MinQ = Helper.GetMinInRange(tableFromInput.ColumnReactivePower, relevantRageOfRows);
+            OutputRow.MaxP = Helper.GetMaxInRange(TableFromInputFile, relevantRageOfRows, "ActivePower");
+            OutputRow.MaxQ = Helper.GetMaxInRange(TableFromInputFile, relevantRageOfRows, "ReactivePower");
+            OutputRow.MinP = Helper.GetMinInRange(TableFromInputFile, relevantRageOfRows, "ActivePower");
+            OutputRow.MinQ = Helper.GetMinInRange(TableFromInputFile, relevantRageOfRows, "ReactivePower");
             for (int i = relevantRageOfRows.Start; i <= relevantRageOfRows.End; i++)
             {
-                currenValueOfActivePower = tableFromInput.ColumnActivePower[i];
-                currenValueOfReactivePower = tableFromInput.ColumnReactivePower[i];
+                currenValueOfActivePower = TableFromInputFile[i].ActivePower;
+                currenValueOfReactivePower = TableFromInputFile[i].ReactivePower;
                 OutputRow.SumRowsP += currenValueOfActivePower;
                 OutputRow.SumRowsQ += currenValueOfReactivePower;
-                currentTimeInterval = Helper.GetTimeMinuteInterval(tableFromInput.ColumnStartTime[i], tableFromInput.ColumnEndTime[i]);
+                currentTimeInterval = Helper.GetTimeMinuteInterval(TableFromInputFile[i].StartTime, TableFromInputFile[i].EndTime);
                 OutputRow.TotalMin += currentTimeInterval;
                 tempRmsActivePower += Math.Pow(currenValueOfActivePower * Ratio, 2) * currentTimeInterval;
                 tempRmsReactivePower += Math.Pow(currenValueOfReactivePower * Ratio, 2) * currentTimeInterval;

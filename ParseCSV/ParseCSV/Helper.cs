@@ -219,24 +219,44 @@ namespace ParseCSV
         }
 
         // получает максимальное значение в списке в указанном диапазоне
-        public static double GetMaxInRange(List<double> inputList, Range range)
+        public static double GetMaxInRange(MyTable inputList, Range range, string typeOFPower = "ActivePower")
         {
             double val = int.MinValue;
-            for (int i = range.Start; i < range.End + 1; i++)
+            if (typeOFPower == "ActivePower")
             {
-                if (inputList[i] > val) val = inputList[i];
+                for (int i = range.Start; i < range.End + 1; i++)
+                {
+                    if (inputList[i].ActivePower > val) val = inputList[i].ActivePower;
+                }
+            }
+            else
+            {
+                for (int i = range.Start; i < range.End + 1; i++)
+                {
+                    if (inputList[i].ReactivePower > val) val = inputList[i].ReactivePower;
+                }
             }
 
             return val;
         }
 
         // получает минимальное значение в списке в указанном диапазоне
-        public static double GetMinInRange(List<double> inputList, Range range)
+        public static double GetMinInRange(MyTable inputList, Range range, string typeOFPower = "ActivePower")
         {
             double val = int.MaxValue;
-            for (int i = range.Start; i < range.End + 1; i++)
+            if (typeOFPower == "ActivePower")
             {
-                if (inputList[i] < val) val = inputList[i];
+                for (int i = range.Start; i < range.End + 1; i++)
+                {
+                    if (inputList[i].ActivePower < val) val = inputList[i].ActivePower;
+                }
+            }
+            else
+            {
+                for (int i = range.Start; i < range.End + 1; i++)
+                {
+                    if (inputList[i].ReactivePower < val) val = inputList[i].ReactivePower;
+                }
             }
 
             return val;
@@ -266,21 +286,21 @@ namespace ParseCSV
             return collector;
         }
 
-        public static Range GetRowsRangeByMonthOfYear(Table inputTable, int month, int year)
+        public static Range GetRowsRangeByMonthOfYear(MyTable inputTable, int month, int year)
         {
             int currentMonth = 0;
             int currentYear = 0;
             int counter = 0;
             var outputRange = new Range { Start = int.MinValue, End = int.MinValue };
-            foreach (var date in inputTable.ColumnDate)
+            for (int i = 0; i < inputTable.Table.Count; i++)
             {
-                currentMonth = date.Month;
-                currentYear = date.Year;
+                currentMonth = inputTable[i].Date.Month;
+                currentYear = inputTable[i].Date.Year;
                 if (currentMonth == month && currentYear == year && outputRange.Start == int.MinValue)
                 {
                     outputRange.Start = counter;
                 }
-                else if (outputRange.Start != int.MinValue && currentMonth != month && inputTable.ColumnDate[counter - 1].Month == month)
+                else if (outputRange.Start != int.MinValue && currentMonth != month && inputTable[i - 1].Date.Month == month)
                 {
                     outputRange.End = counter - 1;
                     break;
@@ -301,43 +321,15 @@ namespace ParseCSV
             return outputRange;
         }
 
-        public static Table ParseCsvOld(List<string> inputList)
+        public static MyTable ParseCsv(List<string> inputList)
         {
-            var output = new Table();
-            var resultOfParsingDate = new DateTime();
-            foreach (var line in inputList)
-            {
-                var tempArray = line.Split(';');
-                if (DateTime.TryParse(tempArray[0], out resultOfParsingDate))
-                {
-                    output.ColumnDate.Add(resultOfParsingDate);
-                    output.ColumnStartTime.Add(DateTime.Parse(tempArray[1]));
-                    if (tempArray[2] == WrongTimeFormatMidnight)
-                    {
-                        output.ColumnEndTime.Add(DateTime.Parse(RightTimeFormatMidnight).AddDays(1));
-                    }
-                    else
-                    {
-                        output.ColumnEndTime.Add(DateTime.Parse(tempArray[2]));
-                    }
-
-                    output.ColumnActivePower.Add(double.Parse(tempArray[3]));
-                    output.ColumnReactivePower.Add(double.Parse(tempArray[17]));
-                }
-            }
-            
-            return output;
-        }
-
-        public static TableConstructor.Table ParseCsv(List<string> inputList)
-        {
-            var output = new TableConstructor.Table();
+            var output = new MyTable();
             var resultOfParsingDate = new DateTime();
             int rowCounter = 0;
             foreach (var line in inputList)
             {
                 var tempArray = line.Split(';');
-                var row = new TableConstructor.Row();
+                var row = new Row();
                 if (DateTime.TryParse(tempArray[0], out resultOfParsingDate))
                 {
                     row.Date = resultOfParsingDate;
