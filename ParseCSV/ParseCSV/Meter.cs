@@ -101,6 +101,11 @@ namespace ParseCSV
                 if (relevantRageOfRows.Start == int.MinValue)
                 {
                     Console.WriteLine("В документе нет запрашиваемого диапазона по дате");
+                    Console.WriteLine(
+                        "В документе содержатся данные в диапазоне с {0} по {1}", 
+                        TableFromInputFile[0].Date.ToShortDateString(),
+                        TableFromInputFile[TableFromInputFile.Table.Count - 1].Date.ToShortDateString());
+
                     Console.WriteLine("Повторите ввод данных");
                     Console.WriteLine();
                     Input.GetYear();

@@ -48,7 +48,21 @@ namespace ParseCSV
         {
             var output = new InputData();
             output.GetPathInputFile();
-            output.GetPathOutputFile();
+            
+            do
+            {
+                output.GetPathOutputFile();
+                if (output.PathInputFile == output.PathOutputFile)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine(
+                        "!!!Внимание!!!\n" +
+                        "Имя файла с результатами вычислений совпадает с именем файла-источника, " +
+                        "во избежании перезаписи введите иное имя");
+                }
+            }
+            while (output.PathInputFile == output.PathOutputFile);
+    
             output.GetYear();
             output.GetMonth();
             Console.WriteLine();
