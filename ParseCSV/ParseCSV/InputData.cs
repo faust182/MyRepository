@@ -7,8 +7,11 @@ namespace ParseCSV
     class InputData
     {
         public string PathInputFile { get; set; }
+
         public string PathOutputFile { get; set; }
+
         public string Month { get; set; }
+
         public int Year { get; set; }
 
         public void GetPathInputFile()
@@ -100,6 +103,7 @@ namespace ParseCSV
             do
             {
                 string inputMonth = Console.ReadLine();
+                Console.WriteLine();
                 month = Validator.GetMonthNumber(inputMonth);
                 if (month != 0)
                 {

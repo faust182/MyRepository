@@ -65,7 +65,7 @@ namespace ParseCSV
 
         public OutputData OutputRow = new OutputData();
 
-        private bool flagSuccessReadFile = true;
+        private bool isReadingOfFileSuccessful = true;
 
         public MyTable TableFromInputFile { get; set; }
 
@@ -89,7 +89,7 @@ namespace ParseCSV
             var inputList = Helper.ReadCsv(Input.PathInputFile);
             if (inputList.Count == 0) 
             {
-                flagSuccessReadFile = false;
+                isReadingOfFileSuccessful = false;
                 return;
             }
 
@@ -103,7 +103,9 @@ namespace ParseCSV
                     Console.WriteLine("В документе нет запрашиваемого диапазона по дате");
                     Console.WriteLine("Повторите ввод данных");
                     Console.WriteLine();
-                    Input = Helper.GetInputData();
+                    Input.GetYear();
+                    Input.GetMonth();
+                    Console.WriteLine();
                 }
             }
             while (relevantRageOfRows.Start == int.MinValue);
@@ -130,7 +132,7 @@ namespace ParseCSV
 
         public void CreateOutputFile()
         {
-            if (flagSuccessReadFile)
+            if (isReadingOfFileSuccessful)
             {
                 string[] collumnsName = { "SumRowsP", "SumRowsQ", "Prms", "Qrms", "MaxP", "MinP", "MaxQ", "MinQ", "TotalMin" };
                 double[] valArray = { OutputRow.SumRowsP, OutputRow.SumRowsQ, OutputRow.Prms, OutputRow.Qrms, OutputRow.MaxP, OutputRow.MinP, OutputRow.MaxQ, OutputRow.MinQ, OutputRow.TotalMin };

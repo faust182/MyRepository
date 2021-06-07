@@ -46,96 +46,11 @@ namespace ParseCSV
         // реализует консольный ввод требуемых значений (путь до файла-источника, год, месяц, путь до файла с результатами)
         public static InputData GetInputData()
         {
-            bool isPathInputFileCorrect = false;
-            bool isPathOutputFileCorrect = false;
-            bool isYearCorrect = false;
-            string pathOutputFile;
-            int year;
-            int month;
             var output = new InputData();
-            Console.WriteLine(@"Введите полный путь до файла с данными (пример: d:\Program Files\...\Example meters.CSV)");
-            Console.WriteLine();
-            do
-            {
-                string input = Console.ReadLine();
-                if (Validator.IsPathInputFileCorret(input))
-                {
-                    output.PathInputFile = input;
-                    isPathInputFileCorrect = true;
-                }
-                else
-                {
-                    Console.WriteLine("Неверно указан путь до файла-источника");
-                    Console.WriteLine("Повторите попытку");
-                    Console.WriteLine();
-                }
-            } 
-            while (!isPathInputFileCorrect);
-
-            Console.WriteLine();
-            Console.WriteLine(@"Введите полный путь до файла в который будут помещены результаты (пример: d:\Program Files\...\Result.CSV). Если путь не будет указан, то файл ""output.CSV"" с результатами будет находиться по директории запуска исполняемого файла");
-            Console.WriteLine();
-            do
-            {
-                pathOutputFile = Console.ReadLine();
-                var validation = Validator.IsPathOutputFileCorret(pathOutputFile);
-                if (validation.isNameCorrect && validation.isPathCorrect)
-                {
-                    output.PathOutputFile = pathOutputFile;
-                    isPathOutputFileCorrect = true;
-                }
-                else
-                {
-                    if (validation.isNameCorrect == false)
-                    {
-                        Console.WriteLine("Неверно указано имя файла (используются недопустимые символы или неверно указано расширение)"); 
-                    }
-
-                    if (validation.isPathCorrect == false)
-                    {
-                        Console.WriteLine("Неверно указана директория");
-                    }
-
-                    Console.WriteLine("Повторите попытку");
-                    Console.WriteLine();
-                }
-            }
-            while (!isPathOutputFileCorrect);
-
-            Console.WriteLine();
-            Console.WriteLine("Введите год (допускается ввод тоько полного значения):");
-            do
-            {
-                isYearCorrect = int.TryParse(Console.ReadLine(), out year);
-                if (isYearCorrect)
-                {
-                    output.Year = year;
-                }
-                else
-                {
-                    Console.WriteLine("Неверно указан год");
-                    Console.WriteLine("Повторите попытку");
-                    Console.WriteLine();
-                }
-            }
-            while (!isYearCorrect);
-
-            Console.WriteLine();
-            Console.WriteLine("Введите название месяца (кириллицей) или его порядковый номер:");
-            do
-            {        
-                string inputMonth = Console.ReadLine();
-                month = Validator.GetMonthNumber(inputMonth);
-                if (month != 0) output.Month = inputMonth;
-                else
-                {
-                    Console.WriteLine("Неверно указан месяц");
-                    Console.WriteLine("Повторите попытку");
-                    Console.WriteLine();
-                }
-            }
-            while (month == 0);
-            
+            output.GetPathInputFile();
+            output.GetPathOutputFile();
+            output.GetYear();
+            output.GetMonth();
             Console.WriteLine();
             return output;
         }
