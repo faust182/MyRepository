@@ -96,7 +96,7 @@ namespace ParseCSV
             do
             {
                 TableFromInputFile = Helper.ParseCsv(inputList);
-                int numberOfMomth = Helper.GetMonthNumber(Input.Month);
+                int numberOfMomth = Validator.GetMonthNumber(Input.Month);
                 relevantRageOfRows = Helper.GetRowsRangeByMonthOfYear(TableFromInputFile, numberOfMomth, Input.Year);
                 if (relevantRageOfRows.Start == int.MinValue)
                 {
