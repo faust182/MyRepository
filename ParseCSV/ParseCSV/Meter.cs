@@ -5,6 +5,12 @@ using static ParseCSV.Constants;
 
 namespace ParseCSV
 {
+    enum TypeOfPower
+    {
+        ActivePower,
+        ReactivePower
+    }
+
     struct OutputData
     {
         /// <summary>
@@ -61,11 +67,13 @@ namespace ParseCSV
 
     class Meter
     {
-        public string PathForOutFile = Directory.GetCurrentDirectory() + DefaultNameOutputFile;
+        TypeOfPower typeOfPower;
 
-        public OutputData OutputRow = new OutputData();
+        OutputData outputRow = new OutputData();
 
-        private bool isReadingOfFileSuccessful = true;
+        bool isReadingOfFileSuccessful = true;
+
+        public string PathForOutFile { get; set; } = Directory.GetCurrentDirectory() + DefaultNameOutputFile;
 
         public MyTable TableFromInputFile { get; set; }
 
@@ -85,7 +93,7 @@ namespace ParseCSV
             double currentTimeInterval = 0;
             double tempRmsActivePower = 0;
             double tempRmsReactivePower = 0;
-            Range relevantRageOfRows;
+            Range rageOfRows;
             var inputList = Helper.ReadCsv(Input.PathInputFile);
             if (inputList.Count == 0) 
             {
@@ -97,8 +105,8 @@ namespace ParseCSV
             {
                 TableFromInputFile = Helper.ParseCsv(inputList);
                 int numberOfMomth = Validator.GetMonthNumber(Input.Month);
-                relevantRageOfRows = Helper.GetRowsRangeByMonthOfYear(TableFromInputFile, numberOfMomth, Input.Year);
-                if (relevantRageOfRows.Start == int.MinValue)
+                rageOfRows = Helper.GetRowsRangeByMonthOfYear(TableFromInputFile, numberOfMomth, Input.Year);
+                if (rageOfRows.Start == int.MinValue)
                 {
                     Console.WriteLine("В документе нет запрашиваемого диапазона по дате");
                     Console.WriteLine(
@@ -113,26 +121,26 @@ namespace ParseCSV
                     Console.WriteLine();
                 }
             }
-            while (relevantRageOfRows.Start == int.MinValue);
+            while (rageOfRows.Start == int.MinValue);
             
-            OutputRow.MaxP = Helper.GetMaxInRange(TableFromInputFile, relevantRageOfRows, "ActivePower");
-            OutputRow.MaxQ = Helper.GetMaxInRange(TableFromInputFile, relevantRageOfRows, "ReactivePower");
-            OutputRow.MinP = Helper.GetMinInRange(TableFromInputFile, relevantRageOfRows, "ActivePower");
-            OutputRow.MinQ = Helper.GetMinInRange(TableFromInputFile, relevantRageOfRows, "ReactivePower");
-            for (int i = relevantRageOfRows.Start; i <= relevantRageOfRows.End; i++)
+            outputRow.MaxP = Helper.GetMaxInRange(TableFromInputFile, rageOfRows, TypeOfPower.ActivePower);
+            outputRow.MaxQ = Helper.GetMaxInRange(TableFromInputFile, rageOfRows, TypeOfPower.ReactivePower);
+            outputRow.MinP = Helper.GetMinInRange(TableFromInputFile, rageOfRows, TypeOfPower.ActivePower);
+            outputRow.MinQ = Helper.GetMinInRange(TableFromInputFile, rageOfRows, TypeOfPower.ActivePower);
+            for (int i = rageOfRows.Start; i <= rageOfRows.End; i++)
             {
                 currenValueOfActivePower = TableFromInputFile[i].ActivePower;
                 currenValueOfReactivePower = TableFromInputFile[i].ReactivePower;
-                OutputRow.SumRowsP += currenValueOfActivePower;
-                OutputRow.SumRowsQ += currenValueOfReactivePower;
+                outputRow.SumRowsP += currenValueOfActivePower;
+                outputRow.SumRowsQ += currenValueOfReactivePower;
                 currentTimeInterval = Helper.GetTimeMinuteInterval(TableFromInputFile[i].StartTime, TableFromInputFile[i].EndTime);
-                OutputRow.TotalMin += currentTimeInterval;
+                outputRow.TotalMin += currentTimeInterval;
                 tempRmsActivePower += Math.Pow(currenValueOfActivePower * Ratio, 2) * currentTimeInterval;
                 tempRmsReactivePower += Math.Pow(currenValueOfReactivePower * Ratio, 2) * currentTimeInterval;
             }
 
-            OutputRow.Prms = Math.Sqrt(tempRmsActivePower / OutputRow.TotalMin);
-            OutputRow.Qrms = Math.Sqrt(tempRmsReactivePower / OutputRow.TotalMin);
+            outputRow.Prms = Math.Sqrt(tempRmsActivePower / outputRow.TotalMin);
+            outputRow.Qrms = Math.Sqrt(tempRmsReactivePower / outputRow.TotalMin);
         }
 
         public void CreateOutputFile()
@@ -140,7 +148,7 @@ namespace ParseCSV
             if (isReadingOfFileSuccessful)
             {
                 string[] collumnsName = { "SumRowsP", "SumRowsQ", "Prms", "Qrms", "MaxP", "MinP", "MaxQ", "MinQ", "TotalMin" };
-                double[] valArray = { OutputRow.SumRowsP, OutputRow.SumRowsQ, OutputRow.Prms, OutputRow.Qrms, OutputRow.MaxP, OutputRow.MinP, OutputRow.MaxQ, OutputRow.MinQ, OutputRow.TotalMin };
+                double[] valArray = { outputRow.SumRowsP, outputRow.SumRowsQ, outputRow.Prms, outputRow.Qrms, outputRow.MaxP, outputRow.MinP, outputRow.MaxQ, outputRow.MinQ, outputRow.TotalMin };
                 if (string.IsNullOrEmpty(Input.PathOutputFile)) Helper.CreateCsvFile(PathForOutFile, collumnsName, valArray);
                 else Helper.CreateCsvFile(Input.PathOutputFile, collumnsName, valArray);
             }

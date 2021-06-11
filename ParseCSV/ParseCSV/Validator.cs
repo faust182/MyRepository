@@ -18,7 +18,7 @@ namespace ParseCSV
                 path.Append(pathArray[i] + "\\");
             }
 
-            return (Directory.Exists(path.ToString()) && new FileInfo(inputPath).Exists) ? true : false;
+            return Directory.Exists(path.ToString()) && new FileInfo(inputPath).Exists;
         }
 
         public static (bool isNameCorrect, bool isPathCorrect) IsPathOutputFileCorret(string inputPath)
@@ -102,7 +102,7 @@ namespace ParseCSV
                 isExpansionCorrect = false;
             }
 
-            return areCharsCorrect && isExpansionCorrect ? true : false;
+            return areCharsCorrect && isExpansionCorrect;
         }
     }
 }

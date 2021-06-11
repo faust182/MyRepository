@@ -17,8 +17,7 @@ namespace ParseCSV
         public void GetPathInputFile()
         {
             bool isPathInputFileCorrect = false;
-            Console.WriteLine(@"Введите полный путь до файла с данными (пример: d:\Program Files\...\Example meters.CSV)");
-            Console.WriteLine();
+            Console.WriteLine("Введите полный путь до файла с данными (пример: d:\\Program Files\\...\\Example meters.CSV)\n");
             do
             {
                 string input = Console.ReadLine();
@@ -29,9 +28,8 @@ namespace ParseCSV
                 }
                 else
                 {
-                    Console.WriteLine("Неверно указан путь до файла-источника");
-                    Console.WriteLine("Повторите попытку");
-                    Console.WriteLine();
+                    Console.WriteLine("Неверно указан путь до файла-источника \n" +
+                        "Повторите попытку\n");
                 }
             }
             while (!isPathInputFileCorrect);
@@ -42,8 +40,10 @@ namespace ParseCSV
         {
             bool isPathOutputFileCorrect = false;
             Console.WriteLine();
-            Console.WriteLine(@"Введите полный путь до файла в который будут помещены результаты (пример: d:\Program Files\...\Result.CSV). Если путь не будет указан, то файл ""output.CSV"" с результатами будет находиться по директории запуска исполняемого файла");
-            Console.WriteLine();
+            Console.WriteLine("Введите полный путь до файла в который будут помещены результаты\n" + 
+                @"(пример: d:\Program Files\...\Result.CSV). Если путь не будет указан, то файл ""output.CSV""" + 
+                "с результатами будет находиться по директории запуска исполняемого файла\n");
+
             do
             {
                 var pathOutputFile = Console.ReadLine();
@@ -65,8 +65,7 @@ namespace ParseCSV
                         Console.WriteLine("Неверно указана директория");
                     }
 
-                    Console.WriteLine("Повторите попытку");
-                    Console.WriteLine();
+                    Console.WriteLine("Повторите попытку\n");
                 }
             }
             while (!isPathOutputFileCorrect);
@@ -87,9 +86,8 @@ namespace ParseCSV
                 }
                 else
                 {
-                    Console.WriteLine("Неверно указан год");
-                    Console.WriteLine("Повторите попытку");
-                    Console.WriteLine();
+                    Console.WriteLine("Неверно указан год \n" +
+                        "Повторите попытку\n");
                 }
             }
             while (!isYearCorrect);
@@ -111,9 +109,8 @@ namespace ParseCSV
                 }
                 else
                 {
-                    Console.WriteLine("Неверно указан месяц");
-                    Console.WriteLine("Повторите попытку");
-                    Console.WriteLine();
+                    Console.WriteLine("Неверно указан месяц \n" +
+                        "Повторите попытку\n");
                 }
             }
             while (month == 0);

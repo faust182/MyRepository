@@ -46,13 +46,13 @@ namespace ParseCSV
         // реализует консольный ввод требуемых значений (путь до файла-источника, год, месяц, путь до файла с результатами)
         public static InputData GetInputData()
         {
-            var output = new InputData();
-            output.GetPathInputFile();
+            var input = new InputData();
+            input.GetPathInputFile();
             
             do
             {
-                output.GetPathOutputFile();
-                if (output.PathInputFile == output.PathOutputFile)
+                input.GetPathOutputFile();
+                if (input.PathInputFile == input.PathOutputFile)
                 {
                     Console.WriteLine();
                     Console.WriteLine(
@@ -61,12 +61,12 @@ namespace ParseCSV
                         "во избежании перезаписи введите иное имя");
                 }
             }
-            while (output.PathInputFile == output.PathOutputFile);
+            while (input.PathInputFile == input.PathOutputFile);
     
-            output.GetYear();
-            output.GetMonth();
+            input.GetYear();
+            input.GetMonth();
             Console.WriteLine();
-            return output;
+            return input;
         }
 
         // получает временной интервал (в минутах) за который было усреднено значение мощностей
@@ -76,10 +76,10 @@ namespace ParseCSV
         }
 
         // получает максимальное значение в списке в указанном диапазоне
-        public static double GetMaxInRange(MyTable inputList, Range range, string typeOFPower = "ActivePower")
+        public static double GetMaxInRange(MyTable inputList, Range range, TypeOfPower type)
         {
             double val = int.MinValue;
-            if (typeOFPower == "ActivePower")
+            if (type == 0)
             {
                 for (int i = range.Start; i < range.End + 1; i++)
                 {
@@ -98,10 +98,10 @@ namespace ParseCSV
         }
 
         // получает минимальное значение в списке в указанном диапазоне
-        public static double GetMinInRange(MyTable inputList, Range range, string typeOFPower = "ActivePower")
+        public static double GetMinInRange(MyTable inputList, Range range, TypeOfPower type)
         {
             double val = int.MaxValue;
-            if (typeOFPower == "ActivePower")
+            if (type == 0)
             {
                 for (int i = range.Start; i < range.End + 1; i++)
                 {

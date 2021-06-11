@@ -6,12 +6,12 @@ namespace ParseCSV
 {
     class MyTable
     {
-        public List<Row> Table;
-
         public MyTable()
         {
             Table = new List<Row>();
         }
+
+        public List<Row> Table { get; set; }
 
         public Row this[int index]
         {
