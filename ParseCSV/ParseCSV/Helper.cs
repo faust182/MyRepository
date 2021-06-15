@@ -180,9 +180,8 @@ namespace ParseCSV
 
         public static MyTable ParseCsv(List<string> inputList)
         {
-            var output = new MyTable();
+            var rows = new List<Row>();
             var resultOfParsingDate = new DateTime();
-            int rowCounter = 0;
             foreach (var line in inputList)
             {
                 var tempArray = line.Split(';');
@@ -202,12 +201,11 @@ namespace ParseCSV
 
                     row.ActivePower = double.Parse(tempArray[3]);
                     row.ReactivePower = double.Parse(tempArray[17]);
-                    output[rowCounter] = row;
-                    rowCounter++;
+                    rows.Add(row);
                 }
             }
 
-            return output;
+            return new MyTable(rows);
         }
     }
 }

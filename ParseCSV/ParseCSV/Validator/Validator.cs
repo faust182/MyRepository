@@ -39,46 +39,43 @@ namespace ParseCSV
 
         public static int GetMonthNumber(string month)
         {
-            switch (month.ToLower())
+            int val;
+            if (int.TryParse(month, out val) && (1 <= val && val <=12))
             {
-                case "1":
-                case "январь":
-                    return 1;
-                case "2":
-                case "февраль":
-                    return 2;
-                case "3":
-                case "март":
-                    return 3;
-                case "4":
-                case "апрель":
-                    return 4;
-                case "5":
-                case "май":
-                    return 5;
-                case "6":
-                case "июнь":
-                    return 6;
-                case "7":
-                case "июль":
-                    return 7;
-                case "8":
-                case "август":
-                    return 8;
-                case "9":
-                case "сентябрь":
-                    return 9;
-                case "10":
-                case "октябрь":
-                    return 10;
-                case "11":
-                case "ноябрь":
-                    return 11;
-                case "12":
-                case "декабрь":
-                    return 12;
-                default: return 0;
+                return val;
             }
+            else
+            {
+                switch (month.ToLower())
+                {  
+                    case "январь":
+                        return 1;
+                    case "февраль":
+                        return 2;
+                    case "март":
+                        return 3;  
+                    case "апрель":
+                        return 4;
+                    case "май":
+                        return 5;
+                    case "июнь":
+                        return 6;
+                    case "июль":
+                        return 7; 
+                    case "август":
+                        return 8;  
+                    case "сентябрь":
+                        return 9;
+                    case "октябрь":
+                        return 10;
+                    case "ноябрь":
+                        return 11;
+                    case "декабрь":
+                        return 12;
+                    default: return 0;
+                }
+            }
+            
         }
 
         static bool IsCsvFileNameCorrect(string fileName)
