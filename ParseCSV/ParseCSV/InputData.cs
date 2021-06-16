@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace ParseCSV
@@ -21,7 +22,7 @@ namespace ParseCSV
             do
             {
                 string input = Console.ReadLine();
-                if (Validator.IsPathInputFileCorret(input))
+                if (new FileInfo(input).Exists)
                 {
                     PathInputFile = input;
                     isPathInputFileCorrect = true;
@@ -47,20 +48,20 @@ namespace ParseCSV
             do
             {
                 var pathOutputFile = Console.ReadLine();
-                var validation = Validator.IsPathOutputFileCorret(pathOutputFile);
-                if (validation.isNameCorrect && validation.isPathCorrect)
+                var fileName = Helper.GetFileName(pathOutputFile);
+                if (Helper.IsPathOutputFileExist(pathOutputFile) && Helper.IsCsvFileNameCorrect(fileName))
                 {
                     PathOutputFile = pathOutputFile;
                     isPathOutputFileCorrect = true;
                 }
                 else
                 {
-                    if (validation.isNameCorrect == false)
+                    if (Helper.IsCsvFileNameCorrect(fileName) == false)
                     {
                         Console.WriteLine("Неверно указано имя файла (используются недопустимые символы или неверно указано расширение)");
                     }
 
-                    if (validation.isPathCorrect == false)
+                    else if (Helper.IsPathOutputFileExist(pathOutputFile) == false)
                     {
                         Console.WriteLine("Неверно указана директория");
                     }
@@ -102,7 +103,7 @@ namespace ParseCSV
             {
                 string inputMonth = Console.ReadLine();
                 Console.WriteLine();
-                month = Validator.GetMonthNumber(inputMonth);
+                month = Helper.GetMonthNumber(inputMonth);
                 if (month != 0)
                 {
                     Month = inputMonth;

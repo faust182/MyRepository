@@ -143,6 +143,48 @@ namespace ParseCSV
             return collector;
         }
 
+        public static string GetFileName(string path)
+        {
+            var pathArray = path.Split('\\');
+            return pathArray[pathArray.Length - 1];
+        }
+
+        public static bool IsPathOutputFileExist(string inputPath)
+        {
+            var path = new StringBuilder();
+            var pathArray = inputPath.Split('\\');
+            for (int i = 0; i < pathArray.Length - 1; i++)
+            {
+                path.Append(pathArray[i] + "\\");
+            }
+
+            return Directory.Exists(path.ToString());
+        }
+
+        public static bool IsCsvFileNameCorrect(string fileName)
+        {
+            bool isExpansionCorrect = true;
+            bool areCharsCorrect = true;
+            var fileNameArray = fileName.Split('.');
+            foreach (var currentChar in fileName)
+            {
+                foreach (var item in Path.GetInvalidFileNameChars())
+                {
+                    if (currentChar == item)
+                    {
+                        areCharsCorrect = false;
+                    }
+                }
+            }
+
+            if (fileNameArray[fileNameArray.Length - 1].ToLower() != csvFileNameExpansion)
+            {
+                isExpansionCorrect = false;
+            }
+
+            return areCharsCorrect && isExpansionCorrect;
+        }
+
         public static Range GetRowsRangeByMonthOfYear(MyTable inputTable, int month, int year)
         {
             int currentMonth = 0;
@@ -206,6 +248,46 @@ namespace ParseCSV
             }
 
             return new MyTable(rows);
+        }
+
+        public static int GetMonthNumber(string month)
+        {
+            int val;
+            if (int.TryParse(month, out val) && ((val >= 1) && (val <= 12)))
+            {
+                return val;
+            }
+            else
+            {
+                switch (month.ToLower())
+                {
+                    case "январь":
+                        return 1;
+                    case "февраль":
+                        return 2;
+                    case "март":
+                        return 3;
+                    case "апрель":
+                        return 4;
+                    case "май":
+                        return 5;
+                    case "июнь":
+                        return 6;
+                    case "июль":
+                        return 7;
+                    case "август":
+                        return 8;
+                    case "сентябрь":
+                        return 9;
+                    case "октябрь":
+                        return 10;
+                    case "ноябрь":
+                        return 11;
+                    case "декабрь":
+                        return 12;
+                    default: return 0;
+                }
+            }
         }
     }
 }

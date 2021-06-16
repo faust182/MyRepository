@@ -5,8 +5,6 @@ using static ParseCSV.Constants;
 
 namespace ParseCSV
 {
-    
-
     struct OutputData
     {
         /// <summary>
@@ -63,13 +61,11 @@ namespace ParseCSV
 
     class Meter
     {
-        TypeOfPower typeOfPower;
-
         OutputData outputRow = new OutputData();
 
         bool isReadingOfFileSuccessful = true;
 
-        public string DefaultPathForOutFile { get; set; } = Directory.GetCurrentDirectory() + DefaultNameOutputFile;
+        public string DefaultPathForOutputFile { get; set; } = Directory.GetCurrentDirectory() + DefaultNameOutputFile;
 
         public MyTable TableFromInputFile { get; set; }
 
@@ -100,7 +96,7 @@ namespace ParseCSV
             do
             {
                 TableFromInputFile = Helper.ParseCsv(inputList);
-                int numberOfMomth = Validator.GetMonthNumber(Input.Month);
+                int numberOfMomth = Helper.GetMonthNumber(Input.Month);
                 rangeOfRows = Helper.GetRowsRangeByMonthOfYear(TableFromInputFile, numberOfMomth, Input.Year);
                 if (rangeOfRows.Start == int.MinValue)
                 {
@@ -147,7 +143,7 @@ namespace ParseCSV
                 double[] valArray = { outputRow.SumRowsP, outputRow.SumRowsQ, outputRow.Prms, outputRow.Qrms, outputRow.MaxP, outputRow.MinP, outputRow.MaxQ, outputRow.MinQ, outputRow.TotalMin };
                 if (string.IsNullOrEmpty(Input.PathOutputFile))
                 {
-                    Helper.CreateCsvFile(DefaultPathForOutFile, collumnsName, valArray);
+                    Helper.CreateCsvFile(DefaultPathForOutputFile, collumnsName, valArray);
                 }
                 else
                 {
