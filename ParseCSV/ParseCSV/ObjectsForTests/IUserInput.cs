@@ -6,6 +6,7 @@ namespace ParseCSV
 {
     public interface IUserInput
     {
+        bool IsTestMode { get; }
         string GetInput();
     }
 }

@@ -47,11 +47,12 @@ namespace ParseCSV
         public static InputData GetInputData()
         {
             var input = new InputData();
-            input.GetPathInputFile();
+            WorkConfig userInput = new WorkConfig();
+            input.GetPathInputFile(userInput);
             
             do
             {
-                input.GetPathOutputFile();
+                input.GetPathOutputFile(userInput);
                 if (input.PathInputFile == input.PathOutputFile)
                 {
                     Console.WriteLine();
@@ -63,8 +64,8 @@ namespace ParseCSV
             }
             while (input.PathInputFile == input.PathOutputFile);
     
-            input.GetYear();
-            input.GetMonth();
+            input.GetYear(userInput);
+            input.GetMonth(userInput);
             Console.WriteLine();
             return input;
         }
@@ -177,7 +178,7 @@ namespace ParseCSV
                 }
             }
 
-            if (fileNameArray[fileNameArray.Length - 1].ToLower() != csvFileNameExpansion)
+            if (fileNameArray[fileNameArray.Length - 1].ToLower() != CsvFileNameExpansion)
             {
                 isExpansionCorrect = false;
             }

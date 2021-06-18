@@ -63,6 +63,8 @@ namespace ParseCSV
     {
         OutputData outputRow = new OutputData();
 
+        WorkConfig userInput = new WorkConfig();
+
         bool isReadingOfFileSuccessful = true;
 
         public string DefaultPathForOutputFile { get; set; } = Directory.GetCurrentDirectory() + DefaultNameOutputFile;
@@ -108,8 +110,8 @@ namespace ParseCSV
 
                     Console.WriteLine("Повторите ввод данных");
                     Console.WriteLine();
-                    Input.GetYear();
-                    Input.GetMonth();
+                    Input.GetYear(userInput);
+                    Input.GetMonth(userInput);
                     Console.WriteLine();
                 }
             }
