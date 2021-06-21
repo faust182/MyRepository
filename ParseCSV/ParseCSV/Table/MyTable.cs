@@ -6,9 +6,9 @@ namespace ParseCSV
 {
     class MyTable
     {
-        public MyTable(List<Row> rows)
+        public MyTable()
         {
-            Table = rows;
+            Table = new List<Row>();
         }
 
         public List<Row> Table { get; set; }
@@ -22,14 +22,7 @@ namespace ParseCSV
 
             set
             {
-                if (index < Table.Count)
-                {
-                    Table.Insert(index, value);
-                }
-                else
-                {
-                    Table.Add(value);
-                }
+                Table.Insert(index, value);
             }
         }
     }

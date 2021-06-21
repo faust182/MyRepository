@@ -223,8 +223,9 @@ namespace ParseCSV
 
         public static MyTable ParseCsv(List<string> inputList)
         {
-            var rows = new List<Row>();
+            var output = new MyTable();
             var resultOfParsingDate = new DateTime();
+            int rowCounter = 0;
             foreach (var line in inputList)
             {
                 var tempArray = line.Split(';');
@@ -244,11 +245,12 @@ namespace ParseCSV
 
                     row.ActivePower = double.Parse(tempArray[3]);
                     row.ReactivePower = double.Parse(tempArray[17]);
-                    rows.Add(row);
+                    output[rowCounter] = row;
+                    rowCounter++;
                 }
             }
 
-            return new MyTable(rows);
+            return output;
         }
 
         public static int GetMonthNumber(string month)
