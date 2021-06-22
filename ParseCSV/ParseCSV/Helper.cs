@@ -47,12 +47,11 @@ namespace ParseCSV
         public static InputData GetInputData()
         {
             var input = new InputData();
-            WorkConfig userInput = new WorkConfig();
-            input.GetPathInputFile(userInput);
+            input.GetPathInputFile();
             
             do
             {
-                input.GetPathOutputFile(userInput);
+                input.GetPathOutputFile();
                 if (input.PathInputFile == input.PathOutputFile)
                 {
                     Console.WriteLine();
@@ -64,8 +63,8 @@ namespace ParseCSV
             }
             while (input.PathInputFile == input.PathOutputFile);
     
-            input.GetYear(userInput);
-            input.GetMonth(userInput);
+            input.GetYear();
+            input.GetMonth();
             Console.WriteLine();
             return input;
         }
@@ -223,9 +222,8 @@ namespace ParseCSV
 
         public static MyTable ParseCsv(List<string> inputList)
         {
-            var output = new MyTable();
+            var rows = new List<Row>();
             var resultOfParsingDate = new DateTime();
-            int rowCounter = 0;
             foreach (var line in inputList)
             {
                 var tempArray = line.Split(';');
@@ -245,22 +243,11 @@ namespace ParseCSV
 
                     row.ActivePower = double.Parse(tempArray[3]);
                     row.ReactivePower = double.Parse(tempArray[17]);
-                    output[rowCounter] = row;
-                    rowCounter++;
+                    rows.Add(row);
                 }
             }
 
-            return output;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> parent of b3842b4 (Test2)
-=======
->>>>>>> parent of b3842b4 (Test2)
-=======
->>>>>>> parent of b3842b4 (Test2)
+            return new MyTable(rows);
         }
 
         public static int GetMonthNumber(string month)
@@ -301,18 +288,6 @@ namespace ParseCSV
                     default: return 0;
                 }
             }
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> parent of 3117e61 (Fixes in process...)
-<<<<<<< HEAD
->>>>>>> parent of b3842b4 (Test2)
-=======
->>>>>>> parent of 3117e61 (Fixes in process...)
->>>>>>> parent of b3842b4 (Test2)
-=======
->>>>>>> parent of b3842b4 (Test2)
         }
     }
 }

@@ -15,14 +15,14 @@ namespace ParseCSV
 
         public int Year { get; set; }
 
-        public void GetPathInputFile(IUserInput userInput)
+        public void GetPathInputFile()
         {
             bool isPathInputFileCorrect = false;
 
             Console.WriteLine("Введите полный путь до файла с данными (пример: d:\\Program Files\\...\\Example meters.CSV)\n");
             do
             {
-                string input = userInput.GetInput();
+                string input = Console.ReadLine();
                 if (new FileInfo(input).Exists)
                 {
                     PathInputFile = input;
@@ -34,11 +34,11 @@ namespace ParseCSV
                         "Повторите попытку\n");
                 }
             }
-            while (!isPathInputFileCorrect && !userInput.IsTestMode);
+            while (!isPathInputFileCorrect);
             Console.WriteLine();
         }
 
-        public void GetPathOutputFile(IUserInput userInput)
+        public void GetPathOutputFile()
         {
             bool isPathOutputFileCorrect = false;
             Console.WriteLine();
@@ -48,7 +48,7 @@ namespace ParseCSV
 
             do
             {
-                var pathOutputFile = userInput.GetInput();
+                var pathOutputFile = Console.ReadLine();
                 var fileName = Helper.GetFileName(pathOutputFile);
                 if (Helper.IsPathOutputFileExist(pathOutputFile) && Helper.IsCsvFileNameCorrect(fileName))
                 {
@@ -69,10 +69,10 @@ namespace ParseCSV
                     Console.WriteLine("Повторите попытку\n");
                 }
             }
-            while (!isPathOutputFileCorrect && !userInput.IsTestMode);
+            while (!isPathOutputFileCorrect);
         }
 
-        public void GetYear(IUserInput userInput)
+        public void GetYear()
         {
             bool isYearCorrect = false;
             int year;
@@ -80,7 +80,7 @@ namespace ParseCSV
             Console.WriteLine("Введите год (допускается ввод тоько полного значения):");
             do
             {
-                isYearCorrect = int.TryParse(userInput.GetInput(), out year);
+                isYearCorrect = int.TryParse(Console.ReadLine(), out year);
                 if (isYearCorrect && year > 2000 && year < 2200)
                 {
                     Year = year;
@@ -91,17 +91,17 @@ namespace ParseCSV
                         "Повторите попытку\n");
                 }
             }
-            while (!isYearCorrect && !userInput.IsTestMode);
+            while (!isYearCorrect);
         }
 
-        public void GetMonth(IUserInput userInput)
+        public void GetMonth()
         {
             int month;
             Console.WriteLine();
             Console.WriteLine("Введите название месяца (кириллицей) или его порядковый номер:");
             do
             {
-                string inputMonth = userInput.GetInput();
+                string inputMonth = Console.ReadLine();
                 Console.WriteLine();
                 month = Helper.GetMonthNumber(inputMonth);
                 if (month != 0)
