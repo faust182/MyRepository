@@ -8,8 +8,12 @@ namespace ParseCSV
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
+=======
+>>>>>>> parent of b3842b4 (Test2)
+=======
 =======
 >>>>>>> parent of b3842b4 (Test2)
 =======
@@ -88,8 +92,11 @@ namespace ParseCSV
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
+>>>>>>> parent of b3842b4 (Test2)
+=======
 >>>>>>> parent of b3842b4 (Test2)
 =======
 >>>>>>> parent of b3842b4 (Test2)
@@ -103,10 +110,13 @@ namespace ParseCSV
 =======
         public string PathForOutFile { get; set; } = Directory.GetCurrentDirectory() + DefaultNameOutputFile;
 >>>>>>> parent of 3117e61 (Fixes in process...)
+<<<<<<< HEAD
 >>>>>>> parent of b3842b4 (Test2)
 =======
         public string PathForOutFile { get; set; } = Directory.GetCurrentDirectory() + DefaultNameOutputFile;
 >>>>>>> parent of 3117e61 (Fixes in process...)
+>>>>>>> parent of b3842b4 (Test2)
+=======
 >>>>>>> parent of b3842b4 (Test2)
 
         public MyTable TableFromInputFile { get; set; }
@@ -141,8 +151,11 @@ namespace ParseCSV
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
+>>>>>>> parent of b3842b4 (Test2)
+=======
 >>>>>>> parent of b3842b4 (Test2)
 =======
 >>>>>>> parent of b3842b4 (Test2)
@@ -158,6 +171,9 @@ namespace ParseCSV
 =======
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
+>>>>>>> parent of b3842b4 (Test2)
 =======
 >>>>>>> parent of b3842b4 (Test2)
                 int numberOfMomth = Validator.GetMonthNumber(Input.Month);
@@ -165,6 +181,9 @@ namespace ParseCSV
                 if (rageOfRows.Start == int.MinValue)
 >>>>>>> parent of 3117e61 (Fixes in process...)
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of b3842b4 (Test2)
+=======
 >>>>>>> parent of b3842b4 (Test2)
 =======
 >>>>>>> parent of b3842b4 (Test2)
@@ -213,8 +232,11 @@ namespace ParseCSV
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
+>>>>>>> parent of b3842b4 (Test2)
+=======
 >>>>>>> parent of b3842b4 (Test2)
 =======
 >>>>>>> parent of b3842b4 (Test2)
@@ -237,11 +259,14 @@ namespace ParseCSV
                 if (string.IsNullOrEmpty(Input.PathOutputFile)) Helper.CreateCsvFile(PathForOutFile, collumnsName, valArray);
                 else Helper.CreateCsvFile(Input.PathOutputFile, collumnsName, valArray);
 >>>>>>> parent of 3117e61 (Fixes in process...)
+<<<<<<< HEAD
 >>>>>>> parent of b3842b4 (Test2)
 =======
                 if (string.IsNullOrEmpty(Input.PathOutputFile)) Helper.CreateCsvFile(PathForOutFile, collumnsName, valArray);
                 else Helper.CreateCsvFile(Input.PathOutputFile, collumnsName, valArray);
 >>>>>>> parent of 3117e61 (Fixes in process...)
+>>>>>>> parent of b3842b4 (Test2)
+=======
 >>>>>>> parent of b3842b4 (Test2)
             }
             else
