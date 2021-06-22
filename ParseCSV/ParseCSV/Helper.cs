@@ -252,8 +252,11 @@ namespace ParseCSV
 
             return output;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
+>>>>>>> parent of b3842b4 (Test2)
+=======
 >>>>>>> parent of b3842b4 (Test2)
         }
 
@@ -297,6 +300,10 @@ namespace ParseCSV
             }
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 3117e61 (Fixes in process...)
+>>>>>>> parent of b3842b4 (Test2)
 =======
 >>>>>>> parent of 3117e61 (Fixes in process...)
 >>>>>>> parent of b3842b4 (Test2)

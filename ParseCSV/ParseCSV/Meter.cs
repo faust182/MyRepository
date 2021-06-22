@@ -7,8 +7,12 @@ namespace ParseCSV
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
+=======
+>>>>>>> parent of b3842b4 (Test2)
+=======
 =======
 >>>>>>> parent of b3842b4 (Test2)
 =======
@@ -83,8 +87,11 @@ namespace ParseCSV
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
+>>>>>>> parent of b3842b4 (Test2)
+=======
 >>>>>>> parent of b3842b4 (Test2)
         public string DefaultPathForOutputFile { get; set; } = Directory.GetCurrentDirectory() + DefaultNameOutputFile;
 =======
@@ -92,6 +99,11 @@ namespace ParseCSV
 >>>>>>> parent of 3117e61 (Fixes in process...)
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
+        public string PathForOutFile { get; set; } = Directory.GetCurrentDirectory() + DefaultNameOutputFile;
+>>>>>>> parent of 3117e61 (Fixes in process...)
+>>>>>>> parent of b3842b4 (Test2)
 =======
         public string PathForOutFile { get; set; } = Directory.GetCurrentDirectory() + DefaultNameOutputFile;
 >>>>>>> parent of 3117e61 (Fixes in process...)
@@ -128,8 +140,11 @@ namespace ParseCSV
                 TableFromInputFile = Helper.ParseCsv(inputList);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
+>>>>>>> parent of b3842b4 (Test2)
+=======
 >>>>>>> parent of b3842b4 (Test2)
                 int numberOfMomth = Helper.GetMonthNumber(Input.Month);
                 rangeOfRows = Helper.GetRowsRangeByMonthOfYear(TableFromInputFile, numberOfMomth, Input.Year);
@@ -141,11 +156,17 @@ namespace ParseCSV
 >>>>>>> parent of 3117e61 (Fixes in process...)
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of b3842b4 (Test2)
                 int numberOfMomth = Validator.GetMonthNumber(Input.Month);
                 rageOfRows = Helper.GetRowsRangeByMonthOfYear(TableFromInputFile, numberOfMomth, Input.Year);
                 if (rageOfRows.Start == int.MinValue)
 >>>>>>> parent of 3117e61 (Fixes in process...)
+<<<<<<< HEAD
+>>>>>>> parent of b3842b4 (Test2)
+=======
 >>>>>>> parent of b3842b4 (Test2)
                 {
                     Console.WriteLine("В документе нет запрашиваемого диапазона по дате");
@@ -191,8 +212,11 @@ namespace ParseCSV
                 double[] valArray = { outputRow.SumRowsP, outputRow.SumRowsQ, outputRow.Prms, outputRow.Qrms, outputRow.MaxP, outputRow.MinP, outputRow.MaxQ, outputRow.MinQ, outputRow.TotalMin };
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
+>>>>>>> parent of b3842b4 (Test2)
+=======
 >>>>>>> parent of b3842b4 (Test2)
                 if (string.IsNullOrEmpty(Input.PathOutputFile))
                 {
@@ -208,6 +232,12 @@ namespace ParseCSV
 >>>>>>> parent of 3117e61 (Fixes in process...)
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
+                if (string.IsNullOrEmpty(Input.PathOutputFile)) Helper.CreateCsvFile(PathForOutFile, collumnsName, valArray);
+                else Helper.CreateCsvFile(Input.PathOutputFile, collumnsName, valArray);
+>>>>>>> parent of 3117e61 (Fixes in process...)
+>>>>>>> parent of b3842b4 (Test2)
 =======
                 if (string.IsNullOrEmpty(Input.PathOutputFile)) Helper.CreateCsvFile(PathForOutFile, collumnsName, valArray);
                 else Helper.CreateCsvFile(Input.PathOutputFile, collumnsName, valArray);
