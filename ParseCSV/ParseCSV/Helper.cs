@@ -252,6 +252,7 @@ namespace ParseCSV
 
             return output;
 <<<<<<< HEAD
+<<<<<<< HEAD
         }
 
         public static int GetMonthNumber(string month)
@@ -292,6 +293,8 @@ namespace ParseCSV
                     default: return 0;
                 }
             }
+=======
+>>>>>>> parent of 3117e61 (Fixes in process...)
 =======
 >>>>>>> parent of 3117e61 (Fixes in process...)
         }
