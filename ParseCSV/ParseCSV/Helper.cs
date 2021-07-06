@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.IO;
 using System.Text;
@@ -58,7 +59,7 @@ namespace ParseCSV
                     Console.WriteLine(
                         "!!!Внимание!!!\n" +
                         "Имя файла с результатами вычислений совпадает с именем файла-источника, " +
-                        "во избежании перезаписи введите иное имя");
+                        "во избежании перезаписи введите иное имя\n");
                 }
             }
             while (input.PathInputFile == input.PathOutputFile);
@@ -66,6 +67,16 @@ namespace ParseCSV
             input.GetYear();
             input.GetMonth();
             Console.WriteLine();
+            var results = new List<ValidationResult>();
+            var context = new ValidationContext(input);
+            if (!Validator.TryValidateObject(input, context, results, true))
+            {
+                foreach (var error in results)
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                }
+            }
+
             return input;
         }
 

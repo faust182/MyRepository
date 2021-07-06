@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Text;
 
@@ -7,12 +8,20 @@ namespace ParseCSV
 {
     public class InputData
     {
+        [Required]
+        [PathInputFile]
         public string PathInputFile { get; set; }
 
+        [Required]
+        [PathOutputFile]
         public string PathOutputFile { get; set; }
 
+        [Required(ErrorMessage = "Неверно указан месяц")]
+        [Range(1, 12)]
         public string Month { get; set; }
 
+        [Required]
+        [Range(2000, 2200)]
         public int Year { get; set; }
 
         public void GetPathInputFile()
@@ -84,9 +93,11 @@ namespace ParseCSV
                 if (isYearCorrect && year > 2000 && year < 2200)
                 {
                     Year = year;
+                    isYearCorrect = true;
                 }
                 else
                 {
+                    isYearCorrect = false;
                     Console.WriteLine("Неверно указан год \n" +
                         "Повторите попытку\n");
                 }
