@@ -12,7 +12,6 @@ namespace ParseCSV
         [PathInputFile]
         public string PathInputFile { get; set; }
 
-        [Required]
         [PathOutputFile]
         public string PathOutputFile { get; set; }
 
@@ -59,7 +58,7 @@ namespace ParseCSV
             {
                 var pathOutputFile = Console.ReadLine();
                 var fileName = Helper.GetFileName(pathOutputFile);
-                if (Helper.IsPathOutputFileExist(pathOutputFile) && Helper.IsCsvFileNameCorrect(fileName))
+                if ((Helper.IsPathOutputFileExist(pathOutputFile) && Helper.IsCsvFileNameCorrect(fileName)) || string.IsNullOrEmpty(pathOutputFile))
                 {
                     PathOutputFile = pathOutputFile;
                     isPathOutputFileCorrect = true;
