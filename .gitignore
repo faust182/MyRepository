@@ -17,6 +17,8 @@ x64/
 [Bb]in/
 [Oo]bj/
 .vs/
+TestParseCSV/
+TestResults/
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
