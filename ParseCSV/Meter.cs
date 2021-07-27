@@ -10,47 +10,47 @@ namespace ParseCSV
         /// <summary>
         /// сумма всех ячеек активной мощности за выбранный период (для проверки)
         /// </summary>
-        public double SumRowsP;
+        public double SumRowsP { get; set; }
 
         /// <summary>
         /// сумма всех ячеек реактивной мощности за выбранный период (для проверки)
         /// </summary>
-        public double SumRowsQ;
+        public double SumRowsQ { get; set; }
 
         /// <summary>
         /// среднеквадратичное значение активной мощности за выбранный период (месяц)
         /// </summary>
-        public double Prms;
+        public double Prms { get; set; }
 
         /// <summary>
         /// среднеквадратичное значение реактивной мощности за выбранный период (месяц)
         /// </summary>
-        public double Qrms;
+        public double Qrms { get; set; }
 
         /// <summary>
         /// максимальное среднее значение потребления активной мощности за выбранный период (месяц), используется не приведенное значения для простоты проверки
         /// </summary>
-        public double MaxP;
+        public double MaxP { get; set; }
 
         /// <summary>
         /// минимальное среднее значение потребления активной мощности за выбранный период (месяц), используется не приведенное значения для простоты проверки
         /// </summary>
-        public double MinP;
+        public double MinP { get; set; }
 
         /// <summary>
         /// максимальное среднее значение потребления реактивной мощности за выбранный период (месяц), используется не приведенное значения для простоты проверки
         /// </summary>
-        public double MaxQ;
+        public double MaxQ { get; set; }
 
         /// <summary>
         /// минимальное среднее значение потребления реактивной мощности за выбранный период (месяц), используется не приведенное значения для простоты проверки
         /// </summary>
-        public double MinQ;
+        public double MinQ { get; set; }
 
         /// <summary>
         /// время (в минутах) общей наработки счетчика за выбранный период (месяц)
         /// </summary>
-        public double TotalMin;
+        public double OperationTime { get; set; }
     }
 
     struct Range
@@ -126,13 +126,13 @@ namespace ParseCSV
                 outputRow.SumRowsP += currenValueOfActivePower;
                 outputRow.SumRowsQ += currenValueOfReactivePower;
                 currentTimeInterval = Helper.GetTimeMinuteInterval(TableFromInputFile[i].StartTime, TableFromInputFile[i].EndTime);
-                outputRow.TotalMin += currentTimeInterval;
+                outputRow.OperationTime += currentTimeInterval;
                 tempRmsActivePower += Math.Pow(currenValueOfActivePower * Ratio, 2) * currentTimeInterval;
                 tempRmsReactivePower += Math.Pow(currenValueOfReactivePower * Ratio, 2) * currentTimeInterval;
             }
 
-            outputRow.Prms = Math.Sqrt(tempRmsActivePower / outputRow.TotalMin);
-            outputRow.Qrms = Math.Sqrt(tempRmsReactivePower / outputRow.TotalMin);
+            outputRow.Prms = Math.Sqrt(tempRmsActivePower / outputRow.OperationTime);
+            outputRow.Qrms = Math.Sqrt(tempRmsReactivePower / outputRow.OperationTime);
         }
 
         public void CreateOutputFile()
@@ -140,7 +140,7 @@ namespace ParseCSV
             if (isReadingOfFileSuccessful)
             {
                 string[] collumnsName = { "SumRowsP", "SumRowsQ", "Prms", "Qrms", "MaxP", "MinP", "MaxQ", "MinQ", "TotalMin" };
-                double[] valArray = { outputRow.SumRowsP, outputRow.SumRowsQ, outputRow.Prms, outputRow.Qrms, outputRow.MaxP, outputRow.MinP, outputRow.MaxQ, outputRow.MinQ, outputRow.TotalMin };
+                double[] valArray = { outputRow.SumRowsP, outputRow.SumRowsQ, outputRow.Prms, outputRow.Qrms, outputRow.MaxP, outputRow.MinP, outputRow.MaxQ, outputRow.MinQ, outputRow.OperationTime };
                 if (string.IsNullOrEmpty(Input.PathOutputFile))
                 {
                     Helper.CreateCsvFile(DefaultPathForOutputFile, collumnsName, valArray);
