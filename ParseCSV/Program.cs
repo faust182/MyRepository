@@ -11,7 +11,7 @@ namespace ParseCSV
             item1.CalculateValues();
             item1.CreateOutputFile();
 
-            // d:\Anton\Work\C#\ParseCSV\ParseCSV\Example meters.CSV
+            // f:\Anton\Work\C#\TestArea\Example meters.CSV
         }
     }
 }
